@@ -32,6 +32,8 @@
           var(--header-spacing-x) + 2 * var(--logo-font-size) +
             var(--logo-spacing) + 0.25em
         );
+        --border-width: 5px;
+        --border: var(--border-width) solid var(--primary);
       }
 
       html,
@@ -72,7 +74,7 @@
         animation: scroll-shadow;
         animation-timeline: scroll();
         animation-range: 0 calc(2 * var(--header-offset));
-        box-shadow: 0 6px 4px hsla(0, 100%, 0%, 0.2);
+        box-shadow: inset 0 calc(-1 * var(--border-width)) 0 0 var(--primary);
       }
 
       header > :first-child {
@@ -102,7 +104,7 @@
       @keyframes scroll-shadow {
         from,
         50% {
-          box-shadow: none;
+          box-shadow: inset 0 calc(-1 * var(--border-width)) 0 0 transparent;
         }
       }
 
@@ -113,6 +115,7 @@
         margin-left: auto;
       }
 
+      /* TODO: Fix mobile design */
       nav a {
         border-radius: 0.5rem;
         min-width: 100px;
@@ -153,7 +156,16 @@
         max-height: 100vh;
       }
 
-      #get dl {
+      h1:not(:first-of-type),
+      h2:not(:first-of-type) {
+        margin-top: var(--header-offset);
+      }
+
+      p {
+        max-width: 640px;
+      }
+
+      #buy dl {
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
         grid-auto-columns: minmax(0, 1fr);
@@ -161,7 +173,7 @@
         column-gap: 1rem;
       }
 
-      #get dt {
+      #buy dt {
         border-radius: 0.5rem 0.5rem 0 0;
         background: var(--primary);
         padding: 0.5rem 1.5rem;
@@ -169,11 +181,18 @@
         font-family: var(--font-family-title);
       }
 
-      #get dd {
+      #buy dd {
         border-radius: 0 0 0.5rem 0.5rem;
-        border: 5px solid var(--primary);
+        border: var(--border);
         margin-inline-start: 0;
         padding: 1rem;
+      }
+
+      footer {
+        padding: 4rem 2rem;
+        background-color: var(--primary);
+        text-align: center;
+        color: hsla(0, 0%, 100%, 0.8);
       }
 
       ::-webkit-scrollbar {
@@ -210,9 +229,10 @@
       </div>
 
       <nav>
-        <a href="#try">Try</a>
-        <a href="#docs">Docs</a>
-        <a href="#get">Get</a>
+        <a href="#try">👀 Try</a>
+        <a href="#why">🤔 Why</a>
+        <a href="#diy">🔧 DIY</a>
+        <a href="#buy">🫰 Buy</a>
       </nav>
     </header>
 
@@ -220,7 +240,6 @@
       a minimal code editor<br />for the browser
     </section>
 
-    <!-- TODO: Typing interaction -->
     <section id="try">
       <!-- prettier-ignore -->
       <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
@@ -228,44 +247,90 @@
       <iframe id="html-preview"></iframe>
     </section>
 
-    <section id="docs">
-      <div style="grid-column-start: 1; grid-column-end: -1">
-        <h2>Docs</h2>
-        <h4>A variety of languages</h4>
-        CodeBedder can work with any language supported by syntax highlighting
-        libraries.
-      </div>
-    </section>
-
     <section>
-      <iframe id="docs-preview"></iframe>
+      <h2 id="why">Why?</h2>
+
+      <h3>Lightweight</h3>
+      <p>
+        <b>1.39KB</b> gzipped. Syntax highlighting needs an additional library like
+        <a href="https://prismjs.com/#supported-languages" target="_blank">PrismJS</a>.
+      </p>
+
+      <h3>Use anywhere</h3>
+      <p>
+        <code class="language-html">&lt;code-bedder&gt;</code>
+        is a web component - easy to integrate with any website!
+      </p>
+
+      <h3>A plethora of languages</h3>
+      <p>
+        Specify any language supported by popular syntax highlighting libraries like
+        <a href="https://prismjs.com/#supported-languages" target="_blank">PrismJS</a>.
+      </p>
+
+      <h2>Why not?</h2>
+      <p>
+        You may need a more full-featured code editor - this one is really basic.
+        It's a transparent textarea on top of a code block with syntax highlighting.
+        You can't change indentation with Tab/Shift+Tab, or automatically insert spaces when you hit Enter.
+      </p>
+      <p>
+        It's most suitable for light editing of content that was already written elsewhere - code samples or templates loaded from a database.
+      </p>
+
+      <h2 id="diy">Want to add this to your website?</h2>
+      <p>
+        Download
+        <a href="codebedder.js" target="_blank">codebedder.js</a>,
+        <a href="prism.js" target="_blank">prism.js</a>, and
+        <a href="prism.css" target="_blank">prism.css</a>,
+        or create a <a href="https://prismjs.com/download.html" target="_blank">custom build of PrismJS</a> to support languages other than HTML/CSS/JavaScript.
+      </p>
 
       <!-- prettier-ignore -->
-      <code-bedder id="docs-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
+      <pre><code class="language-html">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;prism.css&quot; rel=&quot;stylesheet&quot; /&gt;&#13;&#10;  &lt/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;code-bedder lang=&quot;html&quot; onhighlight=&quot;Prism.highlightElement(this)&quot;&gt;YOUR_ESCAPED_HTML_CODE_HERE&lt;/code-bedder&gt;&#13;&#10;    &lt;script src=&quot;prism.js&quot;&gt;&lt;/script&gt;&#13;&#10;    &lt;script src=&quot;codebedder.js&quot;&gt;&lt;/script&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code></pre>
     </section>
 
-    <section id="get">
-      <h2>Want this on your website?</h2>
+    <section id="buy">
+      <h2>Need more guidance?</h2>
+      <p>
+        If you need help integrating code editing into your website, we offer consulting services:
+      </p>
 
       <dl>
-        <dt>DIY</dt>
-        <dd>Read the docs</dd>
-
         <dt>Mini</dt>
-        <dd>We integrate a basic editor for HTML/CSS with instant preview.</dd>
+        <dd>
+          Editor for HTML with instant preview in one page on your website
+          <br />
+          <button type="button">Buy Package</button>
+        </dd>
 
         <dt>Plus</dt>
-        <dd>We integrate a basic editor for a custom language for preview.</dd>
+        <dd>
+          Editor for a custom language with preview in up to 3 different pages on your website. Example integrations:
+          <ul>
+            <li>MJML for writing email templates</li>
+            <li>Templating libraries like Handlebars or Mustache</li>
+            <li>PHP - editing and previewing a .php script</li>
+          </ul>
+          <br />
+          <button type="button">Buy Package</button>
+        </dd>
 
         <dt>Enterprise</dt>
         <dd>
-          Got multiple pages that need a more functional editor and custom
-          preview? Reach out to us for a custom offer.
+          Got many pages?
+          <br />
+          Need a more advanced editor and preview?
+          <br />
+          Reach out to us for a custom offer.
+          <br />
+          <button type="button">Contact Us</button>
         </dd>
       </dl>
     </section>
 
-    <footer>Footer</footer>
+    <footer>©️ Veracity Systems 2023</footer>
 
     <script src="prism.js"></script>
     <script src="codebedder.js"></script>
@@ -274,15 +339,6 @@
         .querySelector('#html-editor')
         .addEventListener('input', function () {
           const iframe = document.querySelector('#html-preview');
-          iframe.contentWindow.document.open();
-          iframe.contentWindow.document.write(this.value);
-          iframe.contentWindow.document.close();
-        });
-
-      document
-        .querySelector('#docs-editor')
-        .addEventListener('input', function () {
-          const iframe = document.querySelector('#docs-preview');
           iframe.contentWindow.document.open();
           iframe.contentWindow.document.write(this.value);
           iframe.contentWindow.document.close();

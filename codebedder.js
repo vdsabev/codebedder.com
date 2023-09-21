@@ -10,8 +10,7 @@ code-bedder textarea {
 
 code-bedder {
   --code-bedder-tab-size: 2;
-  --code-bedder-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --code-bedder-font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   --code-bedder-font-size: 14px;
   --code-bedder-caret-color: #ffffff;
   --code-bedder-selection-background: hsla(0, 0%, 100%, 0.2);
