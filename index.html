@@ -3,9 +3,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeBedder - minimal code editor</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg" />
+    <link rel="mask-icon" href="logo.svg" color="#27ae60" />
+    <meta name="theme-color" content="#27ae60" />
     <!-- TODO: Other meta tags, SEO, social -->
+
     <link href="prism.css" rel="stylesheet" />
-    <script src="prism.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee:wght@400"
+      rel="stylesheet"
+      type="text/css"
+    />
     <style>
       html,
       body {
@@ -14,6 +22,29 @@
       }
 
       body {
+        font-family: ui-monospace, Bungee, sans-serif;
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        justify-content: start;
+        align-items: center;
+        gap: 1rem;
+        font-size: 8vw;
+        margin: 10vh 0;
+      }
+
+      header > :first-child {
+        justify-self: end;
+      }
+
+      header img {
+        height: 50%;
+        min-height: 200px;
+      }
+
+      section {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
@@ -23,25 +54,44 @@
         height: 100%;
         border: 0;
       }
+
+      code-bedder {
+        opacity: 0;
+      }
     </style>
   </head>
 
   <body>
-    <!-- prettier-ignore -->
-    <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;	&lt;head&gt;&#13;&#10;		&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;			&lt;style type=&quot;text/css&quot;&gt;&#13;&#10;			@import url(https://fonts.googleapis.com/css2?family=Bungee);&#13;&#10;			body {&#13;&#10;				font-family: Bungee, cursive;&#13;&#10;				background: #27ae60;&#13;&#10;				color: #ffffff;&#13;&#10;				display: grid;&#13;&#10;				grid-template-rows: 1fr;&#13;&#10;				justify-content: center;&#13;&#10;				align-items: center;&#13;&#10;			}&#13;&#10;			h1 {&#13;&#10;				font-size: 8vw;&#13;&#10;			}&#13;&#10;		&lt;/style&gt;&#13;&#10;	&lt;/head&gt;&#13;&#10;&#13;&#10;	&lt;body&gt;&#13;&#10;		&lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;	&lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;</code-bedder>
+    <header>
+      <span>Code</span>
+      <img src="logo.svg" aria-hidden="true" />
+      <span>Bedder</span>
+    </header>
 
-    <iframe id="html-preview"></iframe>
+    <!-- TODO: Typing interaction -->
+    <section>
+      <!-- TODO: Remove scrollbar when auto height -->
+      <!-- prettier-ignore -->
+      <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background: #27ae60;&#13;&#10;        color: #ffffff;&#13;&#10;        display: grid;&#13;&#10;        grid-template-rows: 1fr;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
-    <script src="codebedder.js"></script>
-    <script>
-      document
-        .querySelector('#html-editor')
-        .addEventListener('input', function () {
-          const iframe = document.querySelector('html-preview').contentWindow.document;
+      <iframe id="html-preview"></iframe>
+
+      <script src="prism.js"></script>
+      <script src="codebedder.js"></script>
+      <script>
+        const editors = {
+          html: document.querySelector('#html-editor'),
+        };
+
+        editors.html.style.opacity = 1;
+
+        editors.html.addEventListener('input', function () {
+          const iframe = document.querySelector('#html-preview');
           iframe.contentWindow.document.open();
           iframe.contentWindow.document.write(this.value);
           iframe.contentWindow.document.close();
         });
-    </script>
+      </script>
+    </section>
   </body>
 </html>

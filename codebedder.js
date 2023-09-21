@@ -37,8 +37,6 @@ code-bedder pre,
 code-bedder textarea {
   outline: 0;
   border-radius: 0;
-  margin: 0;
-  padding: 0;
 }
 
 code-bedder pre {
@@ -67,6 +65,8 @@ code-bedder textarea {
   bottom: 0;
   left: 0;
   resize: none;
+  margin: 0;
+  padding: 0;
   background: transparent;
   color: transparent;
   white-space: pre;
@@ -111,9 +111,11 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 
     constructor() {
       super();
+    }
 
-      // TODO: Move everything below to connected callback?
+    connectedCallback() {
       const container = this;
+
       const codeContent = this.textContent;
       this.textContent = '';
 
@@ -129,7 +131,9 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       this.appendChild(pre);
 
       const textarea = document.createElement('textarea');
-      textarea.setAttribute('autofocus', true);
+      if (this.getAttribute('autofocus')) {
+        textarea.setAttribute('autofocus', true);
+      }
       textarea.setAttribute('spellcheck', false);
       textarea.value = codeContent;
       this.appendChild(textarea);
