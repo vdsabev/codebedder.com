@@ -43,10 +43,17 @@
       }
 
       html {
+        box-sizing: border-box;
         scroll-behavior: smooth;
         scroll-padding-top: calc(
           2 * var(--header-spacing-y) + 2 * var(--logo-font-size)
         );
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
       }
 
       body {
@@ -65,6 +72,7 @@
         justify-content: space-between;
         align-items: center;
         gap: var(--header-spacing-x);
+
         margin-top: var(--header-offset);
         padding: 1rem var(--header-spacing-x);
         background-color: #ffffff;
@@ -132,7 +140,7 @@
       }
 
       section:not(:has(code-bedder)) {
-        max-width: calc(100% - 2 * var(--logo-offset));
+        max-width: max(768px, calc(100% - 2 * var(--logo-offset)));
         width: 100%;
         margin: 0 auto;
         padding: 4rem;
@@ -165,10 +173,11 @@
         max-width: 640px;
       }
 
+      /* TODO: Wrap grid items when they overflow */
       #buy dl {
         display: grid;
         grid-template-rows: auto minmax(0, 1fr);
-        grid-auto-columns: minmax(0, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         grid-auto-flow: column;
         column-gap: 1rem;
       }
@@ -240,6 +249,7 @@
       a minimal code editor<br />for the browser
     </section>
 
+    <!-- TOOD: Typing interaction - select the range of text `World`, delete characters 1 by 1 with delay, type something else. If user focuses on the textarea - stop the timer!  -->
     <section id="try">
       <!-- prettier-ignore -->
       <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
@@ -250,6 +260,10 @@
     <section>
       <h2 id="why">Why?</h2>
 
+      <p>
+        <b>CodeBedder</b> is most suitable for light editing of content that was already written elsewhere - code samples or templates loaded from a database.
+      </p>
+
       <h3>Lightweight</h3>
       <p>
         <b>1.39KB</b> gzipped. Syntax highlighting needs an additional library like
@@ -259,7 +273,7 @@
       <h3>Use anywhere</h3>
       <p>
         <code class="language-html">&lt;code-bedder&gt;</code>
-        is a web component - easy to integrate with any website!
+        web component - easy to integrate with any website!
       </p>
 
       <h3>A plethora of languages</h3>
@@ -270,12 +284,11 @@
 
       <h2>Why not?</h2>
       <p>
-        You may need a more full-featured code editor - this one is really basic.
-        It's a transparent textarea on top of a code block with syntax highlighting.
+        This code editor is really basic - it's a transparent textarea on top of a code block with syntax highlighting.
         You can't change indentation with Tab/Shift+Tab, or automatically insert spaces when you hit Enter.
       </p>
       <p>
-        It's most suitable for light editing of content that was already written elsewhere - code samples or templates loaded from a database.
+        If you need to do that consider using a more full-featured code editor.
       </p>
 
       <h2 id="diy">Want to add this to your website?</h2>
@@ -284,7 +297,7 @@
         <a href="codebedder.js" target="_blank">codebedder.js</a>,
         <a href="prism.js" target="_blank">prism.js</a>, and
         <a href="prism.css" target="_blank">prism.css</a>,
-        or create a <a href="https://prismjs.com/download.html" target="_blank">custom build of PrismJS</a> to support languages other than HTML/CSS/JavaScript.
+        or create a <a href="https://prismjs.com/download.html" target="_blank">custom build of PrismJS</a> to support languages other than HTML/CSS/JavaScript. Then include the assets as follows:
       </p>
 
       <!-- prettier-ignore -->
@@ -294,7 +307,7 @@
     <section id="buy">
       <h2>Need more guidance?</h2>
       <p>
-        If you need help integrating code editing into your website, we offer consulting services:
+        If you need help integrating code editing into your website we offer consulting services:
       </p>
 
       <dl>
@@ -307,9 +320,9 @@
 
         <dt>Plus</dt>
         <dd>
-          Editor for a custom language with preview in up to 3 different pages on your website. Example integrations:
+          Editor for a custom language integrating with a preview in up to 3 different pages on your website. Example integrations:
           <ul>
-            <li>MJML for writing email templates</li>
+            <li>MJML for writing responsive email templates</li>
             <li>Templating libraries like Handlebars or Mustache</li>
             <li>PHP - editing and previewing a .php script</li>
           </ul>
