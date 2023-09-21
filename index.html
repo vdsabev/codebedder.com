@@ -2,7 +2,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editor</title>
+    <title>CodeBedder - minimal code editor</title>
+    <!-- TODO: Other meta tags, SEO, social -->
     <link href="prism.css" rel="stylesheet" />
     <script src="prism.js"></script>
     <style>
@@ -26,132 +27,13 @@
   </head>
 
   <body>
-    <div class="editor">
-      <!-- TODO: Parameters for autofocus, code, language, an easy way to include a custom Prism.js and Prism.css, and to style using CSS variables -->
-
-      <style>
-        .editor,
-        .editor pre,
-        .editor code,
-        .editor textarea {
-          box-sizing: border-box;
-        }
-
-        .editor {
-          --editor-tab-size: 2;
-          --editor-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
-            Consolas, 'Liberation Mono', 'Courier New', monospace;
-          --editor-font-size: 14px;
-          --editor-caret-color: #ffffff;
-          --editor-selection-background: hsla(0, 0%, 100%, 0.2);
-          /** TODO: Style scrollbars */
-
-          overflow: hidden;
-          position: relative;
-          font-size: var(--editor-font-size);
-        }
-
-        .editor pre,
-        .editor textarea {
-          outline: 0;
-          border-radius: 0;
-          margin: 0;
-          padding: 0;
-        }
-
-        .editor pre {
-          width: 100%;
-          height: 100%;
-        }
-
-        .editor code,
-        .editor textarea {
-          outline: 0;
-          font-family: var(--editor-font-family);
-          font-size: 1em;
-          line-height: 1.5;
-          tab-size: var(--editor-tab-size);
-        }
-
-        .editor code {
-          display: block;
-        }
-
-        .editor textarea {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          resize: none;
-          background: transparent;
-          color: transparent;
-          white-space: pre;
-          caret-color: var(--editor-caret-color);
-        }
-
-        .editor textarea::selection {
-          background-color: var(--editor-selection-background);
-        }
-
-        /* Scrollbars */
-        .editor pre::-webkit-scrollbar {
-          width: 0.5rem;
-          height: 0.5rem;
-        }
-
-        .editor pre::-webkit-scrollbar-track,
-        .editor pre::-webkit-scrollbar-thumb,
-        .editor pre::-webkit-scrollbar-thumb:hover {
-          background-color: transparent;
-        }
-
-        .editor textarea::-webkit-scrollbar {
-          width: 0.5rem;
-          height: 0.5rem;
-        }
-
-        .editor textarea::-webkit-scrollbar-track {
-          background-color: hsl(215, 19%, 35%);
-        }
-
-        .editor textarea::-webkit-scrollbar-thumb {
-          border-radius: 0.25rem;
-          background-color: hsl(215, 16%, 47%);
-        }
-
-        .editor textarea::-webkit-scrollbar-thumb:hover {
-          border-radius: 0.25rem;
-          background-color: hsl(215, 20%, 65%);
-        }
-      </style>
-
-      <!-- Write all on one line because pre cares about whitespace -->
-      <pre><code id="code" class="language-html">{{code}}</code></pre>
-
-      <textarea
-        autofocus
-        spellcheck="false"
-        oninput="
-          const code = this.parentElement.querySelector('code');
-          // pre ignores an empty new line at the end which breaks scrolling - an extra character fixes it
-          code.textContent = this.value + (this.value.endsWith('\n') ? ' ' : '');
-          Prism.highlightElement(code);
-        "
-        onscroll="
-          const code = this.parentElement.querySelector('code');
-          code.parentElement.scrollLeft = this.scrollLeft;
-          code.parentElement.scrollTop = this.scrollTop;
-        "
-      >{{code}}</textarea>
-    </div>
+    <code-bedder>&lt;html&gt;&#13;&#10;	&lt;head&gt;&#13;&#10;		&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;			&lt;style type=&quot;text/css&quot;&gt;&#13;&#10;			@import url(https://fonts.googleapis.com/css2?family=Bungee);&#13;&#10;			body {&#13;&#10;				font-family: Bungee, cursive;&#13;&#10;				background: #27ae60;&#13;&#10;				color: #ffffff;&#13;&#10;				display: grid;&#13;&#10;				grid-template-rows: 1fr;&#13;&#10;				justify-content: center;&#13;&#10;				align-items: center;&#13;&#10;			}&#13;&#10;			h1 {&#13;&#10;				font-size: 8vw;&#13;&#10;			}&#13;&#10;		&lt;/style&gt;&#13;&#10;	&lt;/head&gt;&#13;&#10;&#13;&#10;	&lt;body&gt;&#13;&#10;		&lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;	&lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;</code-bedder>
 
     <iframe></iframe>
+    <script src="codebedder.js"></script>
     <script>
-      const iframe = document.querySelector('iframe');
-      const textarea = document.querySelector('textarea');
-      iframe.contentWindow.document = textarea.value;
-      textarea.addEventListener('input', function () {
+      document.querySelector('code-bedder').addEventListener('input', function () {
+        const iframe = document.querySelector('iframe');
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(this.value);
         iframe.contentWindow.document.close();
