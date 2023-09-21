@@ -15,6 +15,12 @@
       type="text/css"
     />
     <style>
+      :root {
+        --header-margin: 10vmin;
+        --header-padding: 1rem;
+        --logo-height: 21vmin;
+      }
+
       html,
       body {
         margin: 0;
@@ -22,41 +28,43 @@
       }
 
       body {
-        font-family: ui-monospace, Bungee, sans-serif;
         position: relative;
       }
 
-      header,
-      footer {
-        height: 10vmin;
-        background-color: #48566a;
-      }
-
-      header, .logo {
+      header {
+        z-index: 1;
         position: sticky;
         top: 0;
-      }
 
-      .logo {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
         align-items: center;
         gap: 2vmin;
+
+        border-radius: 0 0 100px 100px;
+        margin: var(--header-margin) auto;
+        padding: var(--header-padding);
+        background: #ffffff;
+        font-family: Bungee, sans-serif;
         font-size: 8vmin;
+
+        transform-origin: top;
+        transform: scale(0.5);
+        animation: scale-down;
+        animation-timeline: scroll();
+        animation-range: 0 calc(var(--header-margin) + var(--header-padding));
       }
 
-      .logo > :first-child {
+      header > :first-child {
         justify-self: end;
       }
 
-      .logo > :last-child {
+      header > :last-child {
         justify-self: start;
-        transform-origin: left;
-        transform: scale(0.6467, 1);
       }
 
-      .logo img {
-        height: 21vmin;
+      header img {
+        height: var(--logo-height);
       }
 
       section {
@@ -64,9 +72,10 @@
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
 
-      section:first-of-type {
-        height: 61.8vmin;
-        grid-template-columns: initial;
+      @keyframes scale-down {
+        from {
+          transform: scale(1);
+        }
       }
 
       iframe {
@@ -101,15 +110,11 @@
   </head>
 
   <body>
-    <header></header>
-
-    <section>
-      <div class="logo">
-        <span>Code</span>
-        <img src="logo.svg" aria-hidden="true" />
-        <span>Bedder</span>
-      </div>
-    </section>
+    <header>
+      <span>Code</span>
+      <img src="logo.svg" aria-hidden="true" />
+      <span>Bedder</span>
+    </header>
 
     <!-- TODO: Typing interaction -->
     <section>
@@ -132,6 +137,33 @@
           iframe.contentWindow.document.close();
         });
       </script>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div>Left</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div></div>
+      <div>Right</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div>Left</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div></div>
+      <div>Right</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div>Left</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div></div>
+      <div>Right</div>
     </section>
 
     <footer></footer>
