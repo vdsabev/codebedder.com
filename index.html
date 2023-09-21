@@ -27,17 +27,21 @@
   </head>
 
   <body>
-    <code-bedder>&lt;html&gt;&#13;&#10;	&lt;head&gt;&#13;&#10;		&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;			&lt;style type=&quot;text/css&quot;&gt;&#13;&#10;			@import url(https://fonts.googleapis.com/css2?family=Bungee);&#13;&#10;			body {&#13;&#10;				font-family: Bungee, cursive;&#13;&#10;				background: #27ae60;&#13;&#10;				color: #ffffff;&#13;&#10;				display: grid;&#13;&#10;				grid-template-rows: 1fr;&#13;&#10;				justify-content: center;&#13;&#10;				align-items: center;&#13;&#10;			}&#13;&#10;			h1 {&#13;&#10;				font-size: 8vw;&#13;&#10;			}&#13;&#10;		&lt;/style&gt;&#13;&#10;	&lt;/head&gt;&#13;&#10;&#13;&#10;	&lt;body&gt;&#13;&#10;		&lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;	&lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;</code-bedder>
+    <!-- prettier-ignore -->
+    <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;	&lt;head&gt;&#13;&#10;		&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;			&lt;style type=&quot;text/css&quot;&gt;&#13;&#10;			@import url(https://fonts.googleapis.com/css2?family=Bungee);&#13;&#10;			body {&#13;&#10;				font-family: Bungee, cursive;&#13;&#10;				background: #27ae60;&#13;&#10;				color: #ffffff;&#13;&#10;				display: grid;&#13;&#10;				grid-template-rows: 1fr;&#13;&#10;				justify-content: center;&#13;&#10;				align-items: center;&#13;&#10;			}&#13;&#10;			h1 {&#13;&#10;				font-size: 8vw;&#13;&#10;			}&#13;&#10;		&lt;/style&gt;&#13;&#10;	&lt;/head&gt;&#13;&#10;&#13;&#10;	&lt;body&gt;&#13;&#10;		&lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;	&lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;</code-bedder>
 
-    <iframe></iframe>
+    <iframe id="html-preview"></iframe>
+
     <script src="codebedder.js"></script>
     <script>
-      document.querySelector('code-bedder').addEventListener('input', function () {
-        const iframe = document.querySelector('iframe');
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(this.value);
-        iframe.contentWindow.document.close();
-      });
+      document
+        .querySelector('#html-editor')
+        .addEventListener('input', function () {
+          const iframe = document.querySelector('html-preview').contentWindow.document;
+          iframe.contentWindow.document.open();
+          iframe.contentWindow.document.write(this.value);
+          iframe.contentWindow.document.close();
+        });
     </script>
   </body>
 </html>
