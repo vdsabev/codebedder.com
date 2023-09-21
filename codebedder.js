@@ -25,6 +25,7 @@ code-bedder {
   overflow: hidden;
   position: relative;
   font-size: var(--code-bedder-font-size);
+  background-color: hsl(70, 8%, 15%);
 }
 
 code-bedder pre,
@@ -66,6 +67,7 @@ code-bedder textarea {
   left: 0;
   resize: none;
   margin: 0;
+  margin-bottom: -2px; /* fixes scrollbar when using auto height */
   padding: 0;
   background: transparent;
   color: transparent;
