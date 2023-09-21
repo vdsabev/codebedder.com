@@ -4,21 +4,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeBedder - minimal code editor</title>
     <link rel="icon" type="image/svg+xml" href="logo.svg" />
-    <link rel="mask-icon" href="logo.svg" color="#22c55e" />
-    <meta name="theme-color" content="#22c55e" />
+    <link rel="mask-icon" href="logo.svg" color="#8e44ad" />
+    <meta name="theme-color" content="#8e44ad" />
     <!-- TODO: Other meta tags, SEO, social -->
 
-    <link href="prism.css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bungee:wght@400"
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Sofia+Sans:wght@1;300"
       rel="stylesheet"
-      type="text/css"
     />
+    <link href="prism.css" rel="stylesheet" />
+
     <style>
       :root {
-        --header-margin: 10vmin;
-        --header-padding: 1rem;
-        --logo-height: 21vmin;
+        --header-offset: 12vmin;
+        --header-spacing-x: 2rem;
+        --header-spacing-y: 1rem;
+        --logo-font-size: 8vmin;
+        --logo-spacing: calc(0.25 * var(--logo-font-size));
+        --description-height: max(100px, 20vmin);
       }
 
       html,
@@ -27,8 +33,22 @@
         padding: 0;
       }
 
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: calc(2 * var(--header-spacing-x) + 2 * var(--logo-font-size));
+      }
+
       body {
         position: relative;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: Sofia Sans, sans-serif;
       }
 
       header {
@@ -36,35 +56,54 @@
         position: sticky;
         top: 0;
 
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         align-items: center;
-        gap: 2vmin;
-
-        border-radius: 0 0 100px 100px;
-        margin: var(--header-margin) auto;
-        padding: var(--header-padding);
-        background: #ffffff;
+        gap: var(--header-spacing-x);
+        margin-top: var(--header-offset);
+        padding: 1rem var(--header-spacing-x);
+        background-color: #ffffff;
         font-family: Bungee, sans-serif;
-        font-size: 8vmin;
+        line-height: 1;
 
-        transform-origin: top;
-        transform: scale(0.5);
-        animation: scale-down;
+        animation: scroll-shadow;
         animation-timeline: scroll();
-        animation-range: 0 calc(var(--header-margin) + var(--header-padding));
+        animation-range: 0 calc(var(--header-offset) + var(--description-height));
+        box-shadow: 0 6px 4px hsla(0, 100%, 0%, 0.2);
       }
 
       header > :first-child {
-        justify-self: end;
+        display: flex;
+        align-items: center;
+        font-size: var(--logo-font-size);
+        gap: var(--logo-spacing);
+
+        animation: scroll-scale;
+        animation-timeline: scroll();
+        animation-range: 0 var(--header-offset);
+
+        transform-origin: left;
+        transform: scale(0.5);
       }
 
-      header > :last-child {
-        justify-self: start;
+      header > :first-child img {
+        height: 2em;
       }
 
-      header img {
-        height: var(--logo-height);
+      nav {
+        display: flex;
+        gap: 2rem;
+      }
+
+      nav a {
+        border-radius: 0.5rem;
+        min-width: 100px;
+        padding: 1rem;
+        background-color: #8e44ad;
+        color: #ffffff;
+        text-align: center;
+        text-decoration: none;
       }
 
       section {
@@ -72,9 +111,27 @@
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
 
-      @keyframes scale-down {
+      section h1,
+      section h2,
+      section h3,
+      section h4,
+      section h5,
+      section h6 {
+        width: max(190px, 34vmin);
+        font-family: 'Bungee';
+        font-size: max(14px, 2.5vmin);
+        line-height: 1.2;
+      }
+
+      @keyframes scroll-scale {
         from {
           transform: scale(1);
+        }
+      }
+
+      @keyframes scroll-shadow {
+        from, 50% {
+          box-shadow: none;
         }
       }
 
@@ -111,15 +168,29 @@
 
   <body>
     <header>
-      <span>Code</span>
-      <img src="logo.svg" aria-hidden="true" />
-      <span>Bedder</span>
+      <div>
+        <img src="logo.svg" aria-hidden="true" />
+        <div>
+          Code
+          <br />
+          Bedder
+        </div>
+      </div>
+
+      <nav>
+        <a href="#try">Try</a>
+        <a href="#get">Get</a>
+      </nav>
     </header>
 
+    <section style="align-items: center; height: var(--description-height); padding-left: calc(var(--header-spacing-x) + 2 * var(--logo-font-size) + var(--logo-spacing));">
+      <h4>A minimal code editor for the browser</h4>
+    </section>
+
     <!-- TODO: Typing interaction -->
-    <section>
+    <section id="try">
       <!-- prettier-ignore -->
-      <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background: #22c55e;&#13;&#10;        color: #ffffff;&#13;&#10;        display: grid;&#13;&#10;        grid-template-rows: 1fr;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
+      <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
       <iframe id="html-preview"></iframe>
 
@@ -139,33 +210,36 @@
       </script>
     </section>
 
-    <section style="justify-items: center; align-items: center; height: 33vmin">
-      <div>Left</div>
+    <section
+      id="get"
+      style="justify-items: center; align-items: center; height: 33vmin"
+    >
+      <div>Get</div>
     </section>
 
     <section style="justify-items: center; align-items: center; height: 33vmin">
       <div></div>
-      <div>Right</div>
+      <div>Get</div>
     </section>
 
     <section style="justify-items: center; align-items: center; height: 33vmin">
-      <div>Left</div>
-    </section>
-
-    <section style="justify-items: center; align-items: center; height: 33vmin">
-      <div></div>
-      <div>Right</div>
-    </section>
-
-    <section style="justify-items: center; align-items: center; height: 33vmin">
-      <div>Left</div>
+      <div>Get</div>
     </section>
 
     <section style="justify-items: center; align-items: center; height: 33vmin">
       <div></div>
-      <div>Right</div>
+      <div>Get</div>
     </section>
 
-    <footer></footer>
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div>Get</div>
+    </section>
+
+    <section style="justify-items: center; align-items: center; height: 33vmin">
+      <div></div>
+      <div>Get</div>
+    </section>
+
+    <footer>Footer</footer>
   </body>
 </html>
