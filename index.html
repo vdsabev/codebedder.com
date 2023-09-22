@@ -35,6 +35,7 @@
         );
         --border-width: 5px;
         --border: var(--border-width) solid var(--primary-500);
+        --line-height: 1.33;
       }
 
       html,
@@ -61,7 +62,7 @@
         position: relative;
         font-family: var(--font-family-text);
         font-size: 16px;
-        line-height: 1.25;
+        line-height: var(--line-height);
       }
 
       header {
@@ -157,11 +158,9 @@
       }
 
       section.subtitle {
-        --line-height: 1.2;
         margin-bottom: calc(var(--header-offset) - 2em * var(--line-height));
         padding: 0;
         font-size: 1.5rem;
-        line-height: var(--line-height);
       }
 
       iframe {
@@ -302,7 +301,7 @@
     <!-- TODO: Test if using a template tag with slots works better than rendering the escaped code inside -->
     <section id="try">
       <!-- prettier-ignore -->
-      <code-bedder id="editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        max-width: 50%;&#13;&#10;        font-size: 8vw;&#13;&#10;        line-height: 1;&#13;&#10;        text-align: center;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
+      <code-bedder id="editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;    &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        max-width: 50%;&#13;&#10;        font-size: 8vw;&#13;&#10;        line-height: 1;&#13;&#10;        text-align: center;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
       <iframe id="preview"></iframe>
     </section>
@@ -334,7 +333,8 @@
 
       <h2>Why not?</h2>
       <p>
-        This is a really basic code editor - a transparent textarea on top of a code block with syntax highlighting (<a href="https://grugbrain.dev" target="_blank">grug-approved</a>).
+        You might need something more advanced. This is a really basic code editor -
+        a transparent textarea on top of a code block with syntax highlighting.
         You can't change indentation with Tab/Shift+Tab, or automatically insert spaces when you hit Enter.
       </p>
       <p>
@@ -380,8 +380,8 @@
           <dt>🏠 Plus</dt>
           <dd>
             <div>
-              CodeBedder editor for <b>any language</b> with a <b>custom preview</b>
-              in up to <b>3 pages</b> on your website.
+              We'll help you set up a CodeBedder editor for <b>any language</b>
+              with a <b>custom preview</b> in up to <b>3 pages</b> on your website.
               <p>
                 Example integrations:
               </p>
@@ -401,9 +401,11 @@
             <div>
               Got <b>many pages</b>?
               <br />
-              Need a <b>more advanced</b> editor and preview?
+              Need a <b>more advanced</b> preview functionality?
+              <br />
+              Or some <b>custom feature</b> that is missing from CodeBedder?
               <p>
-                Reach out to us for a custom offer.
+                Reach out to us to get an offer.
               </p>
             </div>
             <button type="button">Contact Us</button>
