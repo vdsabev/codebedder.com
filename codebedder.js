@@ -147,12 +147,15 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
         }
       });
 
-      textarea.addEventListener('scroll', function () {
+      textarea.addEventListener('scroll', syncScroll);
+
+      function syncScroll() {
         pre.scrollLeft = this.scrollLeft;
         pre.scrollTop = this.scrollTop;
-      });
+      }
 
       document.addEventListener('DOMContentLoaded', () => {
+        syncScroll.call(textarea);
         this.dispatchEvent(new Event('input'));
       });
     }

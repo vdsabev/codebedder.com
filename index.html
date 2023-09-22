@@ -68,12 +68,8 @@
 
       /* Header */
       header {
-        z-index: 1;
-        position: sticky;
-        top: 0;
-
         display: flex;
-        flex-wrap: wrap-reverse;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
         gap: var(--header-spacing-x);
@@ -83,11 +79,6 @@
         background-color: var(--primary-0);
         font-family: var(--font-family-title);
         line-height: 1;
-
-        animation: scroll-shadow;
-        animation-timeline: scroll();
-        animation-range: 0 calc(2 * var(--header-offset));
-        box-shadow: inset 0 calc(-1 * var(--border-width)) 0 0 var(--primary-500);
       }
 
       header > :first-child {
@@ -95,18 +86,49 @@
         align-items: center;
         font-size: var(--logo-font-size);
         gap: var(--logo-spacing);
-
-        animation: scroll-scale;
-        animation-timeline: scroll();
-        animation-range: 0 var(--header-offset);
-
-        transform-origin: left;
-        transform: scale(0.5);
       }
 
       header > :first-child img {
         width: 2em;
         height: 2em;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--header-spacing-x);
+        margin-left: auto;
+      }
+
+      nav a {
+        border-radius: 0.5rem;
+        min-width: 100px;
+        padding: 1.2rem 1rem;
+        background-color: var(--primary-500);
+        color: var(--primary-0);
+        text-align: center;
+      }
+
+      @media (min-width: 960px) {
+        header {
+          z-index: 1;
+          position: sticky;
+          top: 0;
+
+          animation: scroll-shadow;
+          animation-timeline: scroll();
+          animation-range: 0 calc(2 * var(--header-offset));
+          box-shadow: inset 0 calc(-1 * var(--border-width)) 0 0 var(--primary-500);
+        }
+
+        header > :first-child {
+          animation: scroll-scale;
+          animation-timeline: scroll();
+          animation-range: 0 var(--header-offset);
+
+          transform-origin: left;
+          transform: scale(0.5);
+        }
       }
 
       @keyframes scroll-scale {
@@ -122,39 +144,39 @@
         }
       }
 
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--header-spacing-x);
-        margin-left: auto;
-      }
-
-      /* TODO: Fix mobile design */
-      nav a {
-        border-radius: 0.5rem;
-        min-width: 100px;
-        padding: 1.2rem 1rem;
-        background-color: var(--primary-500);
-        color: var(--primary-0);
-        text-align: center;
-      }
-
       section:has(code-bedder) {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-auto-rows: 33vh;
+      }
+
+      @media (min-width: 960px) {
+        section:has(code-bedder) {
+          grid-auto-rows: initial;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
       }
 
       section:not(:has(code-bedder)) {
-        max-width: max(960px, calc(100% - 2 * var(--logo-offset)));
-        width: 100%;
+        max-width: 768px;
+        width: calc(100% - 2 * var(--logo-offset));
         margin: 0 auto;
-        padding: 4rem;
+        padding: var(--header-spacing-x);
       }
 
-      section.subtitle {
-        margin-bottom: calc(var(--header-offset) - 2em * var(--line-height));
-        padding: 0;
+      .subtitle {
+        margin-bottom: max(1rem, calc(var(--header-offset) - 2em * var(--line-height)));
         font-size: 1.5rem;
+        margin-left: var(--header-spacing-x);
+      }
+
+      @media (min-width: 960px) {
+        section:not(:has(code-bedder)) {
+          padding: 4rem 0;
+        }
+
+        .subtitle {
+          margin-left: var(--logo-offset);
+        }
       }
 
       iframe {
@@ -336,9 +358,9 @@
       </nav>
     </header>
 
-    <section class="subtitle">
+    <div class="subtitle">
       a minimal code editor<br />for the browser
-    </section>
+    </div>
 
     <!-- TODO: Test if using a template tag with slots works better than rendering the escaped code inside -->
     <section id="try">
@@ -380,7 +402,7 @@
         You can't change indentation with Tab/Shift+Tab, or automatically insert spaces when you hit Enter.
       </p>
       <p>
-        If you need to do that consider using a more full-featured code editor.
+        If you need to do that - <a href="#buy">contact us</a> for consultation.
       </p>
 
       <h2 id="diy">Want to add this to your website?</h2>
@@ -405,7 +427,7 @@
         This library is free to use however you like.
       </p>
       <p>
-        If you need help integrating code editing into your website, we also offer the following consulting services:
+        If you need help integrating code editing into your website, we also offer the following consulting service packages:
       </p>
 
       <dl>
@@ -487,7 +509,7 @@
         const start = textarea.value.indexOf(textToReplace);
         const end = start + textToReplace.length;
         textarea.setSelectionRange(start, end);
-        await wait(1000);
+        await wait(500);
 
         const replacement = cycleThroughText[1];
         textarea.setRangeText('', start, end);
