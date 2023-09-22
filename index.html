@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bungee&family=Sofia+Sans"
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Sofia+Sans&display=block"
       rel="stylesheet"
     />
     <style>
@@ -101,6 +101,7 @@
 
       header > :first-child img {
         width: 2em;
+        height: 2em;
       }
 
       @keyframes scroll-scale {
@@ -134,13 +135,20 @@
         text-decoration: none;
       }
 
+      nav a:hover {
+        text-decoration: underline;
+        text-decoration-color: #ffffff;
+        text-decoration-thickness: var(--border-width);
+        text-underline-offset: 5px;
+      }
+
       section:has(code-bedder) {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
 
       section:not(:has(code-bedder)) {
-        max-width: max(768px, calc(100% - 2 * var(--logo-offset)));
+        max-width: max(960px, calc(100% - 2 * var(--logo-offset)));
         width: 100%;
         margin: 0 auto;
         padding: 4rem;
@@ -173,17 +181,28 @@
         max-width: 640px;
       }
 
-      /* TODO: Wrap grid items when they overflow */
       #buy dl {
-        display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        grid-auto-flow: column;
-        column-gap: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      @media (max-width: 960px) {
+        #buy dl {
+          flex-direction: column;
+        }
+      }
+
+      #buy dl > div {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.5rem;
+        border: var(--border);
       }
 
       #buy dt {
-        border-radius: 0.5rem 0.5rem 0 0;
         background: var(--primary);
         padding: 0.5rem 1.5rem;
         color: #ffffff;
@@ -191,10 +210,15 @@
       }
 
       #buy dd {
-        border-radius: 0 0 0.5rem 0.5rem;
-        border: var(--border);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
         margin-inline-start: 0;
         padding: 1rem;
+      }
+
+      #buy dd :first-child {
+        flex: 1;
       }
 
       footer {
@@ -284,7 +308,7 @@
 
       <h2>Why not?</h2>
       <p>
-        This code editor is really basic - it's a transparent textarea on top of a code block with syntax highlighting.
+        This code editor is really basic - it's a transparent textarea on top of a code block with syntax highlighting (<a href="https://grugbrain.dev" target="_blank">grug-approved</a>).
         You can't change indentation with Tab/Shift+Tab, or automatically insert spaces when you hit Enter.
       </p>
       <p>
@@ -297,7 +321,8 @@
         <a href="codebedder.js" target="_blank">codebedder.js</a>,
         <a href="prism.js" target="_blank">prism.js</a>, and
         <a href="prism.css" target="_blank">prism.css</a>,
-        or create a <a href="https://prismjs.com/download.html" target="_blank">custom build of PrismJS</a> to support languages other than HTML/CSS/JavaScript. Then include the assets as follows:
+        or create a <a href="https://prismjs.com/download.html" target="_blank">custom build of PrismJS</a> to support languages other than HTML/CSS/JavaScript.
+        For an HTML editor include the assets as follows:
       </p>
 
       <!-- prettier-ignore -->
@@ -307,40 +332,51 @@
     <section id="buy">
       <h2>Need more guidance?</h2>
       <p>
-        If you need help integrating code editing into your website we offer consulting services:
+        This library is free to use however you like.
+        <br />
+        If you need help integrating code editing into your website, we also offer consulting services:
       </p>
 
       <dl>
-        <dt>Mini</dt>
-        <dd>
-          Editor for HTML with instant preview in one page on your website
-          <br />
-          <button type="button">Buy Package</button>
-        </dd>
+        <div>
+          <dt>Mini</dt>
+          <dd>
+            <div>
+              Editor for HTML with instant preview in one page on your website
+            </div>
+            <button type="button">Buy Package</button>
+          </dd>
+        </div>
 
-        <dt>Plus</dt>
-        <dd>
-          Editor for a custom language integrating with a preview in up to 3 different pages on your website. Example integrations:
-          <ul>
-            <li>MJML for writing responsive email templates</li>
-            <li>Templating libraries like Handlebars or Mustache</li>
-            <li>PHP - editing and previewing a .php script</li>
-          </ul>
-          <br />
-          <button type="button">Buy Package</button>
-        </dd>
+        <div>
+          <dt>Plus</dt>
+          <dd>
+            <div>
+              Editor for a custom language integrating with a preview in up to 3 different pages on your website. Example integrations:
+              <ul>
+                <li>MJML for writing responsive email templates</li>
+                <li>Templating libraries like Handlebars or Mustache</li>
+                <li>PHP - editing and previewing a .php script</li>
+              </ul>
+            </div>
+            <button type="button">Buy Package</button>
+          </dd>
+        </div>
 
-        <dt>Enterprise</dt>
-        <dd>
-          Got many pages?
-          <br />
-          Need a more advanced editor and preview?
-          <br />
-          Reach out to us for a custom offer.
-          <br />
-          <button type="button">Contact Us</button>
-        </dd>
-      </dl>
+        <div>
+          <dt>Enterprise</dt>
+          <dd>
+            <div>
+              Got many pages?
+              <br />
+              Need a more advanced editor and preview?
+              <br />
+              Reach out to us for a custom offer.
+            </div>
+            <button type="button">Contact Us</button>
+          </dd>
+        </dl>
+      </div>
     </section>
 
     <footer>©️ Veracity Systems 2023</footer>
