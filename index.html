@@ -468,7 +468,7 @@
       const start = textarea.value.indexOf('World 🤗');
       textarea.setSelectionRange(start, start);
       textarea.addEventListener('click', () => typingInteractionIsRunning = false);
-      textarea.addEventListener('blur', () => typingInteractionIsRunning = false);
+      textarea.addEventListener('keypress', () => typingInteractionIsRunning = false);
       startTypingInteraction(['World 🤗', 'Beautiful 😍', 'Gorgeous 😘']).catch();
     </script>
   </body>
