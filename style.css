@@ -9,16 +9,11 @@
   --header-offset: 12vmin;
   --header-spacing-x: 2rem;
   --header-spacing-y: 1rem;
-  --logo-font-size: max(48px, 8vmin);
+  --logo-font-size: max(32px, 8vmin);
   --logo-spacing: calc(0.15 * var(--logo-font-size));
-  --logo-offset-x: calc(
-    var(--header-spacing-x) + 2 * var(--logo-font-size) + var(--logo-spacing) +
-      0.25em
-  );
   --border-width: 5px;
   --border: var(--border-width) solid var(--primary-500);
   --duration: 150ms;
-  --line-height: 1.33;
   --section-spacing: 4rem;
 }
 
@@ -52,7 +47,7 @@ body {
   position: relative;
   font-family: var(--font-family-text);
   font-size: 16px;
-  line-height: var(--line-height);
+  line-height: 1.33;
 }
 
 /* Header */
@@ -74,6 +69,7 @@ header .logo {
   align-items: center;
   font-size: var(--logo-font-size);
   gap: var(--logo-spacing);
+  margin-left: 1rem;
 }
 
 header .logo img {
@@ -93,7 +89,7 @@ header .title::after {
   left: 100%;
 
   font-family: var(--font-family-text);
-  font-size: 1.5rem;
+  font-size: min(max(1rem, 4vw), 1.5rem);
   text-align: right;
 }
 
@@ -126,6 +122,8 @@ nav a {
   }
 
   header .logo {
+    margin-left: 0;
+
     animation: scroll-scale;
     animation-timeline: scroll();
     animation-range: 0 var(--header-offset);
