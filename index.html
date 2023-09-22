@@ -284,9 +284,9 @@
     <!-- TODO: Test if using a template tag with slots works better than rendering the escaped code inside -->
     <section id="try">
       <!-- prettier-ignore -->
-      <code-bedder id="html-editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
+      <code-bedder id="editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;      &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        font-size: 8vw;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
-      <iframe id="html-preview"></iframe>
+      <iframe id="preview"></iframe>
     </section>
 
     <section>
@@ -336,7 +336,7 @@
       <!-- prettier-ignore -->
       <pre><code class="language-html">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;prism.css&quot; rel=&quot;stylesheet&quot; /&gt;&#13;&#10;  &lt/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;code-bedder lang=&quot;html&quot; onhighlight=&quot;Prism.highlightElement(this)&quot;&gt;YOUR_ESCAPED_HTML_CODE_HERE&lt;/code-bedder&gt;&#13;&#10;    &lt;script src=&quot;prism.js&quot;&gt;&lt;/script&gt;&#13;&#10;    &lt;script src=&quot;codebedder.js&quot;&gt;&lt;/script&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code></pre>
 
-      <!-- TODO: Show all code for codebedder.js - need to fetch it via ajax and insert the text content in a `<code>` tag. Set max-height. -->
+      <!-- TODO: Show all code for codebedder.js - need to fetch it with hx-get and insert the text content in a `<code>` tag. Set max-height. -->
     </section>
 
     <section id="buy">
@@ -394,14 +394,59 @@
     <script src="prism.js"></script>
     <script src="codebedder.js"></script>
     <script>
-      document
-        .querySelector('#html-editor')
-        .addEventListener('input', function () {
-          const iframe = document.querySelector('#html-preview');
-          iframe.contentWindow.document.open();
-          iframe.contentWindow.document.write(this.value);
-          iframe.contentWindow.document.close();
+      const editor = document.querySelector('#editor');
+      const textarea = editor.querySelector('textarea');
+
+      editor.addEventListener('input', function () {
+        const iframe = document.querySelector('#preview');
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(this.value);
+        iframe.contentWindow.document.close();
+      });
+
+      // Type interaction
+      let typingInteractionIsRunning = true;
+      async function startTypingInteraction(cycleThroughText) {
+        await wait(1000);
+
+        const textToReplace = cycleThroughText[0];
+        const start = textarea.value.indexOf(textToReplace);
+        const end = start + textToReplace.length;
+        textarea.setSelectionRange(start, end);
+        await wait(1000);
+
+        const replacement = cycleThroughText[1];
+        textarea.setRangeText('', start, end);
+        for (let index = 0; index < replacement.length; index++) {
+          textarea.setRangeText(replacement.slice(0, index + 1), start, start + index, 'select');
+          textarea.dispatchEvent(new Event('input'));
+          editor.dispatchEvent(new Event('input'));
+          await wait(50);
+        }
+
+        await wait(1000);
+
+        window.requestAnimationFrame(
+          () => startTypingInteraction([
+            replacement,
+            ...cycleThroughText.slice(2),
+            textToReplace,
+          ]).catch()
+        );
+      }
+
+      function wait(time) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => typingInteractionIsRunning ? resolve() : reject(), time);
         });
+      }
+
+      textarea.focus();
+      const start = textarea.value.indexOf('World 🤗');
+      textarea.setSelectionRange(start, start);
+      textarea.addEventListener('click', () => typingInteractionIsRunning = false);
+      textarea.addEventListener('blur', () => typingInteractionIsRunning = false);
+      startTypingInteraction(['World 🤗', 'Beautiful 😍', 'Gorgeous 😘']).catch();
     </script>
   </body>
 </html>

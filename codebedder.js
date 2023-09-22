@@ -132,9 +132,6 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       this.appendChild(pre);
 
       const textarea = document.createElement('textarea');
-      if (this.getAttribute('autofocus')) {
-        textarea.setAttribute('autofocus', true);
-      }
       textarea.setAttribute('spellcheck', false);
       textarea.value = codeContent;
       this.appendChild(textarea);
