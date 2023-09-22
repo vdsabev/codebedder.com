@@ -343,7 +343,7 @@
     <!-- TODO: Test if using a template tag with slots works better than rendering the escaped code inside -->
     <section id="try">
       <!-- prettier-ignore -->
-      <code-bedder id="editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;    &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        max-width: 50%;&#13;&#10;        font-size: 8vw;&#13;&#10;        line-height: 1;&#13;&#10;        text-align: center;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
+      <code-bedder id="editor" lang="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;    &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        max-width: 60%;&#13;&#10;        font-size: 8vw;&#13;&#10;        line-height: 1;&#13;&#10;        text-align: center;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
       <iframe id="preview"></iframe>
     </section>
@@ -470,6 +470,7 @@
       const editor = document.querySelector('#editor');
       const textarea = editor.querySelector('textarea');
 
+      // Preview
       editor.addEventListener('input', function () {
         const iframe = document.querySelector('#preview');
         iframe.contentWindow.document.open();
@@ -477,7 +478,7 @@
         iframe.contentWindow.document.close();
       });
 
-      // Type interaction
+      // Typing interaction
       let typingInteractionIsRunning = true;
       async function startTypingInteraction(cycleThroughText) {
         await wait(1000);
@@ -522,7 +523,6 @@
       window.addEventListener('scroll', () => {
         if (document.body.scrollTop > document.body.clientHeight) {
           textarea.blur();
-          typingInteractionIsRunning = false;
         }
       });
       startTypingInteraction(['World 🤗', 'Beautiful 😍', 'Gorgeous 😘', 'CodeBedder 💻']).catch();
