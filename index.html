@@ -405,7 +405,7 @@
         This library is free to use however you like.
       </p>
       <p>
-        If you need help integrating code editing into your website, we also offer the following consulting service packages:
+        If you need help integrating code editing into your website, we also offer the following consulting services:
       </p>
 
       <dl>
@@ -415,6 +415,9 @@
             <div>
               We'll help you set up a CodeBedder editor for <b>HTML</b>
               with <b>instant preview</b> in <b>one page</b> on your website.
+              <p>
+                Most suitable for light editing of content that was already written elsewhere - code samples or templates loaded from a database.
+              </p>
             </div>
           </dd>
         </div>
@@ -447,7 +450,7 @@
               <br />
               Or some <b>custom feature</b> that is missing from CodeBedder?
               <p>
-                Reach out to us to get an offer.
+                Reach out to us to get an offer!
               </p>
             </div>
           </dd>
@@ -516,7 +519,13 @@
       textarea.setSelectionRange(start, start);
       textarea.addEventListener('click', () => typingInteractionIsRunning = false);
       textarea.addEventListener('keypress', () => typingInteractionIsRunning = false);
-      startTypingInteraction(['World 🤗', 'Beautiful 😍', 'Gorgeous 😘']).catch();
+      window.addEventListener('scroll', () => {
+        if (document.body.scrollTop > document.body.clientHeight) {
+          textarea.blur();
+          typingInteractionIsRunning = false;
+        }
+      });
+      startTypingInteraction(['World 🤗', 'Beautiful 😍', 'Gorgeous 😘', 'CodeBedder 💻']).catch();
     </script>
   </body>
 </html>
