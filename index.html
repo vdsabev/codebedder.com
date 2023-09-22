@@ -25,12 +25,11 @@
           BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
           'Open Sans', 'Helvetica Neue', sans-serif;
         --header-offset: 12vmin;
-        --header-spacing-x: 2rem;
-        --header-spacing-y: 1rem;
+        --header-spacing: 2rem;
         --logo-font-size: max(48px, 8vmin);
         --logo-spacing: calc(0.15 * var(--logo-font-size));
         --logo-offset: calc(
-          var(--header-spacing-x) + 2 * var(--logo-font-size) +
+          var(--header-spacing) + 2 * var(--logo-font-size) +
             var(--logo-spacing) + 0.25em
         );
         --border-width: 5px;
@@ -48,9 +47,7 @@
       html {
         box-sizing: border-box;
         scroll-behavior: smooth;
-        scroll-padding-top: calc(
-          2 * var(--header-spacing-y) + 2 * var(--logo-font-size)
-        );
+        scroll-padding-top: calc(2 * var(--logo-font-size));
       }
 
       *,
@@ -72,32 +69,46 @@
         flex-wrap: wrap-reverse;
         justify-content: space-between;
         align-items: center;
-        gap: var(--header-spacing-x);
+        gap: var(--header-spacing);
 
-        padding: 1rem var(--header-spacing-x);
+        margin-bottom: var(--header-spacing);
         background-color: var(--primary-0);
         font-family: var(--font-family-title);
         line-height: 1;
       }
 
-      header > :first-child {
+      header .logo {
         display: flex;
         align-items: center;
         font-size: var(--logo-font-size);
         gap: var(--logo-spacing);
       }
 
-      header > :first-child img {
+      header .logo img {
         width: 2em;
         height: 2em;
       }
 
+      header .title {
+        position: relative;
+      }
+
+      header .title::after {
+        content: 'a minimal code editor \00000a for the browser';
+        white-space: pre; /* https://stackoverflow.com/a/17047836 */
+        position: absolute;
+        top: 0;
+        left: 100%;
+
+        font-family: var(--font-family-text);
+        font-size: 1.5rem;
+        text-align: right;
+      }
+
       nav {
-        overflow: hidden;
         display: grid;
         grid-auto-flow: column;
         width: 100%;
-        border-radius: 0.5rem;
       }
 
       nav a {
@@ -113,7 +124,8 @@
           z-index: 1;
           position: sticky;
           top: 0;
-          margin-top: var(--header-offset);
+          margin: var(--header-offset) 0;
+          padding: 1rem var(--header-spacing);
 
           animation: scroll-shadow;
           animation-timeline: scroll();
@@ -121,7 +133,7 @@
           box-shadow: inset 0 calc(-1 * var(--border-width)) 0 0 var(--primary-500);
         }
 
-        header > :first-child {
+        header .logo {
           animation: scroll-scale;
           animation-timeline: scroll();
           animation-range: 0 var(--header-offset);
@@ -130,17 +142,22 @@
           transform: scale(0.5);
         }
 
+        header .title::after {
+          top: 100%;
+          left: 0;
+          text-align: left;
+        }
+
         nav {
           flex: initial;
           width: auto;
-          gap: var(--header-spacing-x);
+          gap: var(--header-spacing);
           margin-left: auto;
         }
 
         nav a {
           min-width: 100px;
           border-radius: 0.5rem;
-          padding: 1.2rem 1rem;
         }
       }
 
@@ -173,22 +190,12 @@
         max-width: 100%;
         width: max(768px, calc(100% - 2 * var(--logo-offset)));
         margin: 0 auto;
-        padding: var(--header-spacing-x);
-      }
-
-      .subtitle {
-        margin-bottom: max(1rem, calc(var(--header-offset) - 2em * var(--line-height)));
-        font-size: 1.5rem;
-        margin-left: var(--header-spacing-x);
+        padding: var(--header-spacing);
       }
 
       @media (min-width: 960px) {
         section:not(:has(code-bedder)) {
           padding: 4rem 0;
-        }
-
-        .subtitle {
-          margin-left: var(--logo-offset);
         }
       }
 
@@ -353,9 +360,9 @@
 
   <body>
     <header>
-      <div>
+      <div class="logo">
         <img src="logo.svg" aria-hidden="true" />
-        <div>
+        <div class="title">
           Code
           <br />
           Bedder
@@ -370,9 +377,9 @@
       </nav>
     </header>
 
-    <div class="subtitle">
+    <!-- <div class="subtitle">
       a minimal code editor<br />for the browser
-    </div>
+    </div> -->
 
     <!-- TODO: Test if using a template tag with slots works better than rendering the escaped code inside -->
     <section id="try">
@@ -490,6 +497,7 @@
           </dd>
         </dl>
 
+        <!-- TODO: Contact dialog & form -->
         <button type="button">✉️ Contact Us</button>
       </div>
     </section>
