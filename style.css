@@ -15,9 +15,6 @@
     var(--header-spacing-x) + 2 * var(--logo-font-size) + var(--logo-spacing) +
       0.25em
   );
-  --header-height: calc(
-    2 * var(--logo-font-size) + 2 * var(--header-spacing-y)
-  );
   --border-width: 5px;
   --border: var(--border-width) solid var(--primary-500);
   --duration: 150ms;
@@ -34,7 +31,15 @@ body {
 html {
   box-sizing: border-box;
   scroll-behavior: smooth;
-  scroll-padding-top: var(--header-height);
+}
+
+@media (min-width: 960px) {
+  html {
+    --header-height: calc(
+      2 * var(--logo-font-size) + 2 * var(--header-spacing-y)
+    );
+    scroll-padding-top: var(--header-height);
+  }
 }
 
 *,
@@ -286,7 +291,8 @@ footer a {
 }
 
 footer {
-  padding: var(--section-spacing) var(--header-spacing-x);
+  margin-top: var(--section-spacing);
+  padding: var(--header-spacing-y) var(--header-spacing-x);
   background-color: var(--primary-500);
   font-family: var(--font-family-title);
   text-align: center;
