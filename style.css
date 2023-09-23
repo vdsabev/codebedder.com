@@ -208,7 +208,6 @@ section:has(#buy) dl {
 }
 
 section:has(#buy) dl > div {
-  flex: 1;
   display: flex;
   flex-direction: column;
   border-radius: 0.5rem;
@@ -224,14 +223,8 @@ section:has(#buy) dt {
 
 section:has(#buy) dd {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   margin-inline-start: 0;
   padding: 1rem;
-}
-
-section:has(#buy) dd :first-child {
-  flex: 1;
 }
 
 section:has(#buy) button {
@@ -303,6 +296,10 @@ h2:not(:first-of-type) {
 
 p {
   max-width: 640px;
+}
+
+ul {
+  padding-inline-start: 2em;
 }
 
 li + li {
