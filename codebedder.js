@@ -1,5 +1,11 @@
 (() => {
+  if (window.CodeBedder) return;
+
   class CodeBedder extends HTMLElement {
+    static register(tagName = 'code-bedder') {
+      window.customElements.define(tagName, CodeBedder);
+    }
+
     static style = `
 code-bedder,
 code-bedder pre,
@@ -110,11 +116,17 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 }
 `;
 
+    events = {};
+
     constructor() {
       super();
     }
 
     connectedCallback() {
+      setTimeout(() => this.render(), 0);
+    }
+
+    render() {
       const container = this;
 
       const codeContent = this.textContent;
@@ -131,12 +143,12 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       pre.appendChild(code);
       this.appendChild(pre);
 
-      const textarea = document.createElement('textarea');
-      textarea.setAttribute('spellcheck', false);
-      textarea.value = codeContent;
-      this.appendChild(textarea);
+      this.textarea = document.createElement('textarea');
+      this.textarea.setAttribute('spellcheck', false);
+      this.textarea.value = codeContent;
+      this.appendChild(this.textarea);
 
-      textarea.addEventListener('input', function () {
+      this.textarea.addEventListener('input', function () {
         // pre ignores an empty new line at the end which breaks scrolling - an extra character fixes it
         code.textContent = this.value + (this.value.endsWith('\n') ? ' ' : '');
 
@@ -147,27 +159,42 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
         }
       });
 
-      textarea.addEventListener('scroll', syncScroll);
-
-      function syncScroll() {
+      this.textarea.addEventListener('scroll', function () {
         pre.scrollLeft = this.scrollLeft;
         pre.scrollTop = this.scrollTop;
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        syncScroll.call(textarea);
-        this.dispatchEvent(new Event('input'));
       });
+
+      this.events.load = true;
+      this.dispatchEvent(new Event('load'));
     }
 
+    // Event handling
+    on(...args) {
+      const [eventName, callback] = args;
+      if (this.events[eventName]) {
+        callback.call(this);
+      } else {
+        this.addEventListener(...args);
+      }
+    }
+
+    off(...args) {
+      this.removeEventListener(...args);
+    }
+
+    // Properties
     get value() {
-      return this.querySelector('textarea').value;
+      return this.textarea.value;
     }
 
     set value(value) {
-      this.querySelector('textarea').value = value;
+      this.textarea.value = value;
     }
   }
 
-  window.customElements.define('code-bedder', CodeBedder);
+  if (!document.currentScript.hasAttribute('data-manual')) {
+    CodeBedder.register();
+  }
+
+  window.CodeBedder = CodeBedder;
 })();

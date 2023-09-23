@@ -1,14 +1,13 @@
-(() => {
+document.addEventListener('DOMContentLoaded', () => {
   const editor = document.querySelector('#editor');
-  const textarea = editor.querySelector('textarea');
+  const iframe = document.querySelector('#preview');
 
   // Preview
-  editor.addEventListener('input', function () {
-    const iframe = document.querySelector('#preview');
+  function setPreviewContent() {
     iframe.contentWindow.document.open();
     iframe.contentWindow.document.write(this.value);
     iframe.contentWindow.document.close();
-  });
+  }
 
   // Typing interaction
   let typingInteractionIsRunning = true;
@@ -17,21 +16,21 @@
     await wait(1000);
 
     const textToReplace = cycleThroughText[0];
-    const start = textarea.value.indexOf(textToReplace);
+    const start = editor.textarea.value.indexOf(textToReplace);
     const end = start + textToReplace.length;
-    textarea.setSelectionRange(start, end);
+    editor.textarea.setSelectionRange(start, end);
     await wait(500);
 
     const replacement = cycleThroughText[1];
-    textarea.setRangeText('', start, end);
+    editor.textarea.setRangeText('', start, end);
     for (let index = 0; index < replacement.length; index++) {
-      textarea.setRangeText(
+      editor.textarea.setRangeText(
         replacement.slice(0, index + 1),
         start,
         start + index,
         'select'
       );
-      textarea.dispatchEvent(new Event('input'));
+      editor.textarea.dispatchEvent(new Event('input'));
       editor.dispatchEvent(new Event('input'));
       await wait(50);
     }
@@ -60,25 +59,32 @@
     });
   }
 
-  const initialText = 'World 🤗';
-  const start = textarea.value.indexOf(initialText);
+  editor.on('load', function () {
+    editor.on('input', setPreviewContent);
+    setPreviewContent.call(editor.textarea);
 
-  textarea.focus();
-  textarea.setSelectionRange(start, start);
+    const initialText = 'World 🤗';
+    const start = editor.textarea.value.indexOf(initialText);
 
-  textarea.addEventListener('click', stopTypingInteraction);
-  textarea.addEventListener('keypress', stopTypingInteraction);
+    if (start < 0) return;
 
-  window.addEventListener('scroll', () => {
-    if (document.body.scrollTop > document.body.clientHeight) {
-      textarea.blur();
-    }
+    editor.textarea.focus();
+    editor.textarea.setSelectionRange(start, start);
+
+    editor.textarea.addEventListener('click', stopTypingInteraction);
+    editor.textarea.addEventListener('keypress', stopTypingInteraction);
+
+    window.addEventListener('scroll', () => {
+      if (document.body.scrollTop > document.body.clientHeight) {
+        editor.textarea.blur();
+      }
+    });
+
+    startTypingInteraction([
+      initialText,
+      'Beautiful 😍',
+      'Gorgeous 😘',
+      'CodeBedder 💻',
+    ]).catch();
   });
-
-  startTypingInteraction([
-    initialText,
-    'Beautiful 😍',
-    'Gorgeous 😘',
-    'CodeBedder 💻',
-  ]).catch();
-})();
+});

@@ -48,6 +48,7 @@ body {
   font-family: var(--font-family-text);
   font-size: 16px;
   line-height: 1.33;
+  transition: opacity var(--duration) linear;
 }
 
 /* Tooltips */
