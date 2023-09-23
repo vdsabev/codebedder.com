@@ -82,7 +82,7 @@ header .title {
 }
 
 header .title::after {
-  content: 'a minimal code editor \00000a for the browser';
+  content: attr(data-subtitle);
   white-space: pre; /* https://stackoverflow.com/a/17047836 */
   position: absolute;
   top: 0;
