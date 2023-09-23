@@ -273,7 +273,7 @@ section:has(#buy) dd::after {
   text-align: center;
 }
 
-section:has(#buy) button {
+section:has(#buy) button[aria-title='contact us'] {
   cursor: pointer;
   border-radius: 0.5rem;
   border: var(--border);
@@ -286,7 +286,7 @@ section:has(#buy) button {
   transition: background-color var(--duration) ease-in-out;
 }
 
-section:has(#buy) button:hover {
+section:has(#buy) button[aria-title='contact us']:hover {
   background-color: var(--primary-0);
   color: var(--primary-500);
 }
@@ -312,12 +312,78 @@ section:has(#buy) button:hover {
     border-left: 0;
   }
 
-  section:has(#buy) button {
+  section:has(#buy) button[aria-title='contact us'] {
     --button-width: 66%;
     margin-left: calc(0.5 * (100% - var(--button-width)));
     width: var(--button-width);
     transform: translate(0, calc(-1 * var(--button-offset)));
   }
+}
+
+/* Dialog */
+dialog {
+  max-width: min(512px, calc(100% - 2 * 1rem));
+  width: 100%;
+  max-height: min(384px, calc(100% - 2 * 1rem));
+  height: 100%;
+  border-radius: 0.5rem;
+  border: 0;
+  padding: 0;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  margin: 0;
+  padding: 1.5rem;
+}
+
+dialog button[aria-title='close'] {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  border-radius: 0.5rem;
+  border: 0;
+  padding: 0 7px;
+  background: transparent;
+  font-size: 1.5rem;
+}
+
+dialog input,
+dialog textarea {
+  border-radius: 0.5rem;
+  border: var(--border);
+  padding: 1rem 0.75rem;
+}
+
+dialog textarea {
+  flex: 1;
+}
+
+dialog .toolbar {
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
+}
+
+dialog .toolbar button {
+  border-radius: 0.5rem;
+  border: var(--border);
+  padding: 0.25rem 1rem;
+  font-family: var(--font-family-title);
+  min-width: 100px;
+}
+
+dialog .toolbar button[value='cancel'] {
+  background: var(--primary-0);
+  color: var(--primary-500);
+}
+
+dialog .toolbar button[value='save'] {
+  background: var(--primary-500);
+  color: var(--primary-0);
 }
 
 /* Footer */
@@ -328,7 +394,7 @@ footer a {
 
 footer {
   margin-top: var(--section-spacing);
-  padding: var(--header-spacing-y) var(--header-spacing-x);
+  padding: 3rem var(--header-spacing-x);
   background-color: var(--primary-500);
   font-family: var(--font-family-title);
   text-align: center;
@@ -369,6 +435,24 @@ a:focus {
 code::selection,
 code ::selection {
   background-color: hsla(0, 0%, 100%, 0.2);
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+input,
+textarea {
+  width: 100%;
+  font-family: var(--font-family-text);
+}
+
+textarea {
+  resize: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* Scrollbar */

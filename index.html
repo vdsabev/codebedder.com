@@ -104,7 +104,8 @@
         automatically insert spaces when you hit <i>Enter</i>.
       </p>
       <p>
-        Need more full-featured code editing? <a href="#buy">Contact us</a> for consulting.
+        Need more full-featured code editing? <a href="#buy">Contact us</a> for
+        consulting.
       </p>
 
       <h2 id="diy">Want to add this to your website?</h2>
@@ -179,7 +180,46 @@
       </dl>
 
       <!-- TODO: Contact dialog & form -->
-      <button type="button">✉️ Contact Us</button>
+      <button
+        type="button"
+        onclick="document.querySelector('dialog').showModal()"
+        aria-title="contact us"
+      >
+        ✉️ Contact us
+      </button>
+
+      <dialog
+        onclick="if (event.target === this) this.close()"
+        onclose="
+          if (this.returnValue === 'save') {
+            alert('TODO: Submit form');
+            this.returnValue = '';
+          }
+        "
+      >
+        <form method="dialog">
+          <button
+            type="button"
+            aria-title="close"
+            onclick="this.closest('dialog').close()"
+          >
+            ×
+          </button>
+
+          <input type="email" name="email" placeholder="Email" />
+          <textarea name="text" placeholder="Tell us more about your use case"></textarea>
+
+          <div class="toolbar">
+            <button type="button" onclick="this.closest('dialog').close()" value="cancel">
+              Cancel
+            </button>
+
+            <button type="submit" value="save">
+              Save
+            </button>
+          </div>
+        </form>
+      </dialog>
     </section>
 
     <footer>
