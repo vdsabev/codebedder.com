@@ -283,7 +283,7 @@ section:has(#buy) button[aria-title='contact us'] {
   border-radius: 0.5rem;
   border: var(--border);
   width: 100%;
-  padding: 1rem 0.75rem;
+  padding: 0.75rem;
   background-color: var(--primary-500);
   color: var(--primary-0);
   font-family: var(--font-family-title);
@@ -360,7 +360,7 @@ dialog input,
 dialog textarea {
   border-radius: 0.5rem;
   border: var(--border);
-  padding: 1rem 0.75rem;
+  padding: 0.75rem;
 }
 
 dialog textarea {
@@ -386,9 +386,14 @@ dialog .toolbar button[value='cancel'] {
   color: var(--primary-500);
 }
 
-dialog .toolbar button[value='save'] {
+dialog .toolbar button[value='submit'] {
   background: var(--primary-500);
   color: var(--primary-0);
+}
+
+input[data-dirty]:invalid,
+textarea[data-dirty]:invalid {
+  border-color: red;
 }
 
 /* Footer */
@@ -450,6 +455,7 @@ input,
 textarea {
   width: 100%;
   font-family: var(--font-family-text);
+  font-size: 1.2rem;
 }
 
 textarea {

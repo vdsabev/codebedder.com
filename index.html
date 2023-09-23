@@ -4,9 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>CodeBedder - simplest code editor on the web</title>
-    <meta name="description" content="An HTML web component that makes it easy to add code editing to any website" />
-    <meta name="og:title" content="CodeBedder - simplest code editor on the web" />
-    <meta name="og:description" content="An HTML web component that makes it easy to add code editing to any website" />
+    <meta
+      name="description"
+      content="An HTML web component that makes it easy to add code editing to any website"
+    />
+    <meta
+      name="og:title"
+      content="CodeBedder - simplest code editor on the web"
+    />
+    <meta
+      name="og:description"
+      content="An HTML web component that makes it easy to add code editing to any website"
+    />
     <meta name="og:image" content="screenshot.png" />
 
     <link rel="icon" type="image/svg+xml" href="logo.svg" />
@@ -44,7 +53,10 @@
           👀 Try
         </a>
 
-        <a href="#why" data-title="Why you might want to use it, and why not">
+        <a
+          href="#why"
+          data-title="Why you might want to use CodeBedder (or not)"
+        >
           🤔 Why
         </a>
 
@@ -154,7 +166,7 @@
         </div>
 
         <div style="flex: 3">
-          <dt>🏠 Plus</dt>
+          <dt>🌷 Plus</dt>
           <dd data-price="$500">
             We'll help you set up a CodeBedder editor for
             <b>any language</b> with a <b>custom preview</b> in up to
@@ -171,10 +183,10 @@
         </div>
 
         <div style="flex: 2">
-          <dt>🏢 Enterprise</dt>
+          <dt>✨ Xtra</dt>
           <dd data-price="$???">
-            Got <b>many pages</b>? Need a <b>more advanced</b> preview
-            functionality?
+            Got <b>many pages</b> in need of a code editor? Need a
+            <b>more advanced</b> preview functionality?
 
             <p>Or some <b>custom feature</b> you're missing from CodeBedder?</p>
 
@@ -194,14 +206,15 @@
       <dialog
         onclick="if (event.target === this) this.close()"
         onclose="
-          if (this.returnValue === 'save') {
-            // TODO: Error handling
+          if (this.returnValue === 'submit') {
+            this.returnValue = '';
             fetch('/', {
               method: 'POST',
               body: new URLSearchParams(new FormData(document.forms.contact)).toString(),
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            }).catch((error) => {
+              window.alert(error.toString());
             });
-            this.returnValue = '';
           }
         "
       >
@@ -214,11 +227,13 @@
             ×
           </button>
 
+          <!-- TODO: Remove if email works without it -->
           <input type="hidden" name="form-name" value="contact" />
-          <input type="email" name="email" placeholder="Email" />
+          <input type="email" name="email" placeholder="Email" required />
           <textarea
             name="text"
             placeholder="Tell us more about your use case"
+            required
           ></textarea>
 
           <div class="toolbar">
@@ -230,7 +245,19 @@
               Cancel
             </button>
 
-            <button type="submit" value="save">Save</button>
+            <button
+              type="submit"
+              value="submit"
+              onclick="
+                if (!document.forms.contact.checkValidity()) {
+                  ['email', 'text'].forEach((name) => {
+                    document.forms.contact[name].setAttribute('data-dirty', true)
+                  });
+                }
+              "
+            >
+              Send
+            </button>
           </div>
         </form>
       </dialog>
