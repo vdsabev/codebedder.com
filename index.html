@@ -99,8 +99,7 @@
       <h2>Why not?</h2>
       <p>
         You might need something more advanced. This is a really basic code
-        editor - a transparent textarea on top of a code block with syntax
-        highlighting. You can't change indentation with <i>Tab/Shift+Tab</i>, or
+        editor. You can't change indentation with <i>Tab/Shift+Tab</i>, or
         automatically insert spaces when you hit <i>Enter</i>.
       </p>
       <p>
@@ -179,7 +178,6 @@
         </div>
       </dl>
 
-      <!-- TODO: Contact dialog & form -->
       <button
         type="button"
         onclick="document.querySelector('dialog').showModal()"
@@ -192,12 +190,17 @@
         onclick="if (event.target === this) this.close()"
         onclose="
           if (this.returnValue === 'save') {
-            alert('TODO: Submit form');
+            // TODO: Error handling
+            fetch('/', {
+              method: 'POST',
+              body: new URLSearchParams(new FormData(document.forms.contact)).toString(),
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            });
             this.returnValue = '';
           }
         "
       >
-        <form method="dialog">
+        <form name="contact" method="dialog">
           <button
             type="button"
             aria-title="close"
@@ -206,17 +209,23 @@
             ×
           </button>
 
+          <input type="hidden" name="form-name" value="contact" />
           <input type="email" name="email" placeholder="Email" />
-          <textarea name="text" placeholder="Tell us more about your use case"></textarea>
+          <textarea
+            name="text"
+            placeholder="Tell us more about your use case"
+          ></textarea>
 
           <div class="toolbar">
-            <button type="button" onclick="this.closest('dialog').close()" value="cancel">
+            <button
+              type="button"
+              onclick="this.closest('dialog').close()"
+              value="cancel"
+            >
               Cancel
             </button>
 
-            <button type="submit" value="save">
-              Save
-            </button>
+            <button type="submit" value="save">Save</button>
           </div>
         </form>
       </dialog>
