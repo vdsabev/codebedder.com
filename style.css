@@ -50,6 +50,37 @@ body {
   line-height: 1.33;
 }
 
+/* Tooltips */
+[data-title] {
+  position: relative;
+}
+
+[data-title]:hover::before {
+  content: '▲';
+  position: absolute;
+  top: calc(100% - 0.5em);
+  left: calc(50% - 0.5em);
+  right: calc(50% - 0.5em);
+  color: var(--primary-500);
+  font-size: 1.5rem;
+}
+
+[data-title]:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  top: calc(100% + var(--border-width));
+  left: calc(50% - 80px);
+  right: calc(50% - 80px);
+  border-radius: 0.5rem;
+  border: var(--border);
+  padding: 0.5rem;
+  background: var(--primary-0);
+  color: #000000;
+  font-family: var(--font-family-text);
+  font-size: 1rem;
+  text-wrap: wrap;
+}
+
 /* Header */
 header {
   display: flex;
@@ -89,7 +120,7 @@ header .title::after {
   left: 100%;
 
   font-family: var(--font-family-text);
-  font-size: min(max(1rem, 4vw), 1.5rem);
+  font-size: min(max(0.75rem, 4vw), 1.5rem);
   text-align: right;
 }
 
@@ -177,7 +208,7 @@ section:has(code-bedder) {
 }
 
 section:not(:has(code-bedder)) {
-  max-width: 1096px;
+  max-width: 1028px;
   width: 100%;
   margin: 0 auto;
   padding: var(--header-spacing-y) var(--header-spacing-x);
@@ -325,7 +356,7 @@ a {
   text-decoration: underline;
   text-decoration-color: transparent;
   text-decoration-thickness: var(--border-width);
-  text-underline-offset: 5px;
+  text-underline-offset: calc(var(--border-width) + 3px);
   transition: text-decoration-color var(--duration) linear;
 }
 
