@@ -222,9 +222,24 @@ section:has(#buy) dt {
 }
 
 section:has(#buy) dd {
+  --price-font-size: 2rem;
+
   flex: 1;
+  position: relative;
   margin-inline-start: 0;
-  padding: 1rem;
+  margin: 1rem;
+  margin-bottom: calc(2rem + var(--price-font-size));
+}
+
+section:has(#buy) dd::after {
+  content: attr(data-price);
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  color: var(--primary-500);
+  font-size: var(--price-font-size);
+  font-family: var(--font-family-title);
+  text-align: center;
 }
 
 section:has(#buy) button {
