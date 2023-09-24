@@ -55,32 +55,14 @@
       </div>
 
       <nav>
-        <a
-          href="https://emaily-templates.netlify.app/?code=%3Chtml%3E%0A++%3Chead%3E%0A++++%3Clink+href%3D%22https%3A%2F%2Ffonts.googleapis.com%2Fcss2%3Ffamily%3D%7B%7Bfont%7D%7D%22+rel%3D%22stylesheet%22+type%3D%22text%2Fcss%22%3E%0A++++%3Cstyle+type%3D%22text%2Fcss%22%3E%0A++++++body+%7B%0A++++++++font-family%3A+%7B%7Bfont%7D%7D%3B%0A++++++++background-color%3A+%7B%7Bprimary_color%7D%7D%3B%0A++++++++color%3A+%23ffffff%3B%0A++++++++display%3A+flex%3B%0A++++++++justify-content%3A+center%3B%0A++++++++align-items%3A+center%3B%0A++++++%7D%0A%0A++++++h1+%7B%0A++++++++max-width%3A+60%25%3B%0A++++++++font-size%3A+8vw%3B%0A++++++++line-height%3A+1%3B%0A++++++++text-align%3A+center%3B%0A++++++%7D%0A++++%3C%2Fstyle%3E%0A++%3C%2Fhead%3E%0A%0A++%3Cbody%3E%0A++++%3Ch1%3EHello+%7B%7Bname%7D%7D+%F0%9F%A4%97%3C%2Fh1%3E%0A++%3C%2Fbody%3E%0A%3C%2Fhtml%3E&applyData=true&data=%7B%22%7B%7Bfont%7D%7D%22%3A%22Bungee%22%2C%22%7B%7Bprimary_color%7D%7D%22%3A%22%238e44ad%22%2C%22%7B%7Bname%7D%7D%22%3A%22World%22%7D&lang=html"
-          target="_blank"
-          data-title="Open a demo app built with CodeBedder"
-        >
-          👀 Try
-        </a>
-
-        <a
-          href="#why"
-          data-title="Why you might want to use CodeBedder (or not)"
-        >
-          🤔 Why
-        </a>
-
-        <a href="#diy" data-title="How to add CodeBedder to your website">
-          🔧 DIY
-        </a>
-
-        <a href="#buy" data-title="Need help? We offer consulting services!">
-          🫰 Buy
-        </a>
+        <a href="#why" data-title="Why you might want to use CodeBedder (or not)">🤔 Why</a>
+        <a href="#try" data-title="See apps built with CodeBedder">👀 Try</a>
+        <a href="#diy" data-title="How to add CodeBedder to your website">🔧 DIY</a>
+        <a href="#buy" data-title="Need help? We offer consulting services!">🫰 Buy</a>
       </nav>
     </header>
 
-    <section id="try">
+    <section>
       <!-- prettier-ignore -->
       <code-bedder id="editor" data-language="html" onhighlight="Prism.highlightElement(this)">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Bungee&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&#13;&#10;    &lt;style type=&quot;text/css&quot;&gt;&#13;&#10;      body {&#13;&#10;        font-family: Bungee, sans-serif;&#13;&#10;        background-color: #8e44ad;&#13;&#10;        color: #ffffff;&#13;&#10;        display: flex;&#13;&#10;        justify-content: center;&#13;&#10;        align-items: center;&#13;&#10;      }&#13;&#10;&#13;&#10;      h1 {&#13;&#10;        max-width: 60%;&#13;&#10;        font-size: 8vw;&#13;&#10;        line-height: 1;&#13;&#10;        text-align: center;&#13;&#10;      }&#13;&#10;    &lt;/style&gt;&#13;&#10;  &lt;/head&gt;&#13;&#10;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;h1&gt;Hello World 🤗&lt;/h1&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code-bedder>
 
@@ -138,6 +120,13 @@
         <a href="#buy">Contact us</a> for consulting.
       </p>
 
+      <h2 id="try">Try</h2>
+      Apps built with CodeBedder:
+      <ul>
+        <li><a href="https://emaily-templates.netlify.app" target="_blank">eMaily</a> - a demo HTML/MJML editor with live preview and data replacement</li>
+        <li>This website - go play with the <a href="#editor">editor</a> if you haven't yet!</li>
+      </ul>
+
       <h2 id="diy">Want to add this to your website?</h2>
       <p>
         Download
@@ -180,7 +169,7 @@
         </div>
 
         <div style="flex: 3">
-          <dt>🌷 Plus</dt>
+          <dt>🌵 Plus</dt>
           <dd data-price="$500">
             We'll help you set up a CodeBedder editor for
             <b>any language</b> with a <b>custom preview</b> in up to
@@ -197,7 +186,7 @@
         </div>
 
         <div style="flex: 2">
-          <dt>🌵 Xtra</dt>
+          <dt>🌷 Xtra</dt>
           <dd data-price="$???">
             Got <b>many pages</b> in need of a code editor? Need a
             <b>more advanced</b> preview functionality?
