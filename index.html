@@ -8,6 +8,8 @@
       name="description"
       content="An HTML web component that makes it easy to add code editing to any website"
     />
+
+    <!-- TODO: Test online -->
     <meta
       name="og:title"
       content="CodeBedder - simplest code editor on the web"
@@ -217,15 +219,17 @@
             this.returnValue = '';
             fetch('/', {
               method: 'POST',
-              body: new URLSearchParams(new FormData(document.forms.contact)).toString(),
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams(new FormData(document.forms.contact)).toString(),
+            }).then(() => {
+              window.alert(`Message sent! We'll get back to you as soon as we can.`);
             }).catch((error) => {
               window.alert(error.toString());
             });
           }
         "
       >
-        <form name="contact" method="dialog">
+        <form name="contact" method="dialog" netlify>
           <button
             type="button"
             aria-title="close"
@@ -234,8 +238,6 @@
             ×
           </button>
 
-          <!-- TODO: Remove if email works without it -->
-          <input type="hidden" name="form-name" value="contact" />
           <input type="email" name="email" placeholder="Email" required />
           <textarea
             name="text"
