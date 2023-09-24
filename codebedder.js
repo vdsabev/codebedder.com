@@ -184,7 +184,7 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 
     // Properties
     get value() {
-      return this.textarea.value;
+      return this.textarea?.value;
     }
 
     set value(value) {
