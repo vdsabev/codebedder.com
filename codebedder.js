@@ -166,6 +166,7 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 
       this.events.load = true;
       this.dispatchEvent(new Event('load'));
+      this.textarea.dispatchEvent(new Event('input'));
     }
 
     // Event handling
