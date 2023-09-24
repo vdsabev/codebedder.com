@@ -279,7 +279,7 @@ section:has(#buy) dd::after {
   text-align: center;
 }
 
-section:has(#buy) button[aria-title='contact us'] {
+section:has(#buy) button[aria-label='contact us'] {
   cursor: pointer;
   border-radius: 0.5rem;
   border: var(--border);
@@ -292,7 +292,7 @@ section:has(#buy) button[aria-title='contact us'] {
   transition: background-color var(--duration) ease-in-out;
 }
 
-section:has(#buy) button[aria-title='contact us']:hover {
+section:has(#buy) button[aria-label='contact us']:hover {
   background-color: var(--primary-0);
   color: var(--primary-500);
 }
@@ -318,7 +318,7 @@ section:has(#buy) button[aria-title='contact us']:hover {
     border-left: 0;
   }
 
-  section:has(#buy) button[aria-title='contact us'] {
+  section:has(#buy) button[aria-label='contact us'] {
     --button-width: 66%;
     margin-left: calc(0.5 * (100% - var(--button-width)));
     width: var(--button-width);
@@ -346,7 +346,7 @@ dialog form {
   padding: 1.5rem;
 }
 
-dialog button[aria-title='close'] {
+dialog button[aria-label='close'] {
   position: absolute;
   top: 2px;
   right: 2px;

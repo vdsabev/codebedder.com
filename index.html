@@ -211,7 +211,7 @@
       <button
         type="button"
         onclick="document.querySelector('dialog').showModal()"
-        aria-title="contact us"
+        aria-label="contact us"
       >
         ✉️ Contact us
       </button>
@@ -236,15 +236,16 @@
         <form name="contact" method="dialog" netlify>
           <button
             type="button"
-            aria-title="close"
+            aria-label="close"
             onclick="this.closest('dialog').close()"
           >
             ×
           </button>
 
-          <input type="email" name="email" placeholder="Email" required />
+          <input type="email" name="email" aria-label="Email" placeholder="Email" required />
           <textarea
             name="text"
+            aria-label="Text"
             placeholder="Tell us more about your use case"
             required
           ></textarea>
