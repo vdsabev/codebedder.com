@@ -6,6 +6,8 @@
       window.customElements.define(tagName, CodeBedder);
     }
 
+    static formAssociated = true;
+
     static style = `
 code-bedder,
 code-bedder pre,
@@ -120,6 +122,7 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 
     constructor() {
       super();
+      this.internals = this.attachInternals();
     }
 
     connectedCallback() {
@@ -149,6 +152,8 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       this.appendChild(this.textarea);
 
       this.textarea.addEventListener('input', function () {
+        container.internals.setFormValue(this.value);
+
         // pre ignores an empty new line at the end which breaks scrolling - an extra character fixes it
         code.textContent = this.value + (this.value.endsWith('\n') ? ' ' : '');
 
