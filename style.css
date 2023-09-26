@@ -307,10 +307,6 @@ section:has(#buy) button[aria-label='contact us']:hover {
 }
 
 @media (min-width: 960px) {
-  section:has(#buy) {
-    --button-offset: calc(1.2em + 1em + 1rem);
-  }
-
   section:has(#buy) dl {
     overflow: hidden;
     flex-direction: row;
@@ -320,7 +316,7 @@ section:has(#buy) button[aria-label='contact us']:hover {
 
   section:has(#buy) dl > div {
     border-radius: 0;
-    padding-bottom: var(--button-offset);
+    padding-bottom: 3.2rem;
   }
 
   section:has(#buy) dl > div + div {
@@ -331,7 +327,7 @@ section:has(#buy) button[aria-label='contact us']:hover {
     --button-width: 66%;
     margin-left: calc(0.5 * (100% - var(--button-width)));
     width: var(--button-width);
-    transform: translate(0, calc(-1 * var(--button-offset)));
+    transform: translate(0, calc(-1 * (1rem + 50%)));
   }
 }
 
