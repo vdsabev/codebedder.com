@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const previousScrollTop = document.body.scrollTop;
     editor.textarea.focus();
-    editor.textarea.setSelectionRange(start, start);
     document.body.scrollTop = previousScrollTop;
+    editor.textarea.setSelectionRange(start, start);
 
     editor.textarea.addEventListener('click', stopTypingInteraction);
     editor.textarea.addEventListener('keypress', stopTypingInteraction);
