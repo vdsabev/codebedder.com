@@ -5,9 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Preview
   function setPreviewContent() {
     iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(this.value);
+    iframe.contentWindow.document.write(editor.value);
     iframe.contentWindow.document.close();
   }
+
+  editor.on('input', setPreviewContent);
+  editor.on('load', setPreviewContent);
 
   // Typing interaction
   let typingInteractionIsRunning = true;
@@ -60,9 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   editor.on('load', function () {
-    editor.on('input', setPreviewContent);
-    setPreviewContent.call(editor.textarea);
-
     const initialText = 'World 🤗';
     const start = editor.textarea.value.indexOf(initialText);
 
