@@ -148,7 +148,13 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       this.appendChild(pre);
 
       this.textarea = document.createElement('textarea');
+
+      this.textarea.setAttribute('name', this.getAttribute('name') || '');
+      this.removeAttribute('name');
+
       this.textarea.setAttribute('placeholder', this.getAttribute('placeholder') || '');
+      this.removeAttribute('placeholder');
+
       this.textarea.setAttribute('spellcheck', false);
       this.textarea.value = codeContent;
       this.appendChild(this.textarea);
