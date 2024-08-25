@@ -140,6 +140,7 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
       this.appendChild(style);
 
       const pre = document.createElement('pre');
+      pre.tabIndex = -1;
       const code = document.createElement('code');
       code.textContent = codeContent;
       code.className = `language-${this.getAttribute('data-language') || 'html'}`;
