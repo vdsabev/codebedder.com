@@ -198,15 +198,20 @@ code-bedder textarea::-webkit-scrollbar-thumb:hover {
 
     // Properties
     get value() {
-      return this.textarea?.value;
+      if (this.textarea) {
+        return this.textarea.value;
+      }
     }
 
     set value(value) {
-      this.textarea.value = value;
+      if (this.textarea && this.textarea.value !== value) {
+        this.textarea.value = value;
+        this.textarea.dispatchEvent(new Event('input'));
+      }
     }
   }
 
-  if (!document.currentScript.hasAttribute('data-manual')) {
+  if (!(document.currentScript && document.currentScript.hasAttribute('data-manual'))) {
     CodeBedder.register();
   }
 

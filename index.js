@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         replacement,
         ...cycleThroughText.slice(2),
         textToReplace,
-      ]).catch()
+      ]).catch(console.error)
     );
   }
 
@@ -85,6 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
       'Beautiful 😍',
       'Gorgeous 😘',
       'CodeBedder 💻',
-    ]).catch();
+    ]).catch(console.error);
   });
 });
