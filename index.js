@@ -1,3 +1,12 @@
+// Lets the first section fill the screen below the header
+const firstSection = document.querySelector('section');
+function setHeaderBlockSize() {
+  document.documentElement.style.setProperty('--header-block-size', `${firstSection.getBoundingClientRect().top + window.scrollY}px`);
+}
+setHeaderBlockSize();
+new ResizeObserver(setHeaderBlockSize).observe(document.querySelector('header'));
+window.addEventListener('resize', setHeaderBlockSize);
+
 document.addEventListener('DOMContentLoaded', () => {
   const editor = document.querySelector('#editor');
   const iframe = document.querySelector('#preview');

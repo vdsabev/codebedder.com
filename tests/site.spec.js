@@ -25,9 +25,7 @@ test.describe('homepage', () => {
       .toBe('Edited');
   });
 
-  test('the editor fits its content without a vertical scrollbar', async ({ page }, testInfo) => {
-    // On narrow screens the editor has a fixed height by design and scrolls
-    test.skip(testInfo.project.use.viewport.width < 960, 'Fixed height layout');
+  test('the editor fits its content without a vertical scrollbar', async ({ page }) => {
     await page.goto('/');
     await page.waitForFunction(() => document.querySelector('#editor').textarea);
     const sizes = await page.evaluate(() => {
@@ -35,6 +33,18 @@ test.describe('homepage', () => {
       return { client: textarea.clientHeight, scroll: textarea.scrollHeight };
     });
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
+  });
+
+  test('with short code, the header and editor section fill exactly one screen', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.use.viewport.width < 960, 'Stacked layout is taller than the screen');
+    await page.goto('/');
+    await page.waitForFunction(() => document.querySelector('#editor').textarea);
+    await page.evaluate(() => {
+      document.querySelector('#editor').textarea.dispatchEvent(new Event('click')); // stop the typing demo
+      document.querySelector('#editor').value = '<h1>Hi</h1>';
+    });
+    const bottom = await page.evaluate(() => document.querySelector('section').getBoundingClientRect().bottom);
+    expect(Math.abs(bottom - (await page.evaluate(() => window.innerHeight)))).toBeLessThanOrEqual(1);
   });
 
   test('the typing demo runs', async ({ page }) => {

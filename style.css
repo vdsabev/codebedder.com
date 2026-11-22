@@ -203,7 +203,9 @@ nav a {
 
 section:has(code-bedder) {
   display: grid;
-  grid-auto-rows: calc(45.5vh - 8vw);
+  /* Preview on top, then the editor at the height of its code */
+  grid-template-rows: calc(45.5vh - 8vw) auto;
+  grid-template-rows: calc(45.5svh - 8vw) auto;
 }
 
 iframe {
@@ -216,19 +218,15 @@ iframe {
 
 @media (min-width: 960px) {
   section:has(code-bedder) {
+    /* Fill the screen below the header (--header-block-size is set in index.js) */
     min-height: 75vh;
-    grid-auto-rows: initial;
+    min-height: calc(100svh - var(--header-block-size, 25svh));
+    grid-template-rows: auto;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   iframe {
     grid-row-start: initial;
-  }
-}
-
-@media (min-width: 1280px) {
-  section:has(code-bedder) {
-    min-height: 57vh;
   }
 }
 
