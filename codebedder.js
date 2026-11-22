@@ -241,11 +241,30 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
 
       this.textarea.addEventListener('input', () => this.update());
       this.textarea.addEventListener('scroll', () => this.syncScroll());
+      this.textarea.addEventListener('keydown', (event) => this.keepIndent(event));
 
       this.update();
 
       this.events.load = true;
       this.dispatchEvent(new Event('load'));
+    }
+
+    // Enter continues the indentation of the current line
+    keepIndent(event) {
+      const { textarea } = this;
+      if (event.key !== 'Enter' || event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.defaultPrevented || textarea.readOnly || textarea.disabled) return;
+
+      const { value, selectionStart } = textarea;
+      const indent = value.slice(value.lastIndexOf('\n', selectionStart - 1) + 1, selectionStart).match(/^[ \t]*/)[0];
+      if (!indent) return;
+
+      event.preventDefault();
+      // execCommand keeps the native undo history; fall back where it's unsupported
+      if (!document.execCommand('insertText', false, '\n' + indent)) {
+        textarea.setRangeText('\n' + indent, selectionStart, textarea.selectionEnd, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     }
 
     syncAttribute(name) {

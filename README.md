@@ -19,6 +19,8 @@ The simplest code editor on the web: a `<code-bedder>` web component that layers
 
 The initial code is the element's text content, so HTML must be escaped. A single leading newline is ignored, like in `<pre>` and `<textarea>`.
 
+Pressing Enter keeps the indentation of the current line.
+
 ### Attributes
 
 | Attribute       | Description                                                                         |

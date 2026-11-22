@@ -54,6 +54,40 @@ test.describe('interaction', () => {
     expect(result.inputs).toBeGreaterThan(0);
   });
 
+  test('Enter keeps the indentation of the current line and can be undone', async ({ page }, testInfo) => {
+    await load(page, editor('style="height: 200px; width: 300px"', 'if (a) {\n  \tb();\n}'));
+    const textarea = page.locator('#editor textarea');
+    const value = () => page.evaluate(() => document.querySelector('#editor').value);
+
+    await press(textarea, testInfo);
+    await page.keyboard.press('ControlOrMeta+Home');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('End');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('c();');
+    expect(await value()).toBe('if (a) {\n  \tb();\n  \tc();\n}');
+    expect(await page.evaluate(() => document.querySelector('#editor').code.textContent)).toBe(await value());
+
+    // Splitting inside the indentation keeps only what's before the caret
+    await page.keyboard.press('Home');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    expect(await value()).toBe('if (a) {\n  \tb();\n \n  \tc();\n}');
+
+    // Unindented lines get a plain newline
+    await page.keyboard.press('ControlOrMeta+End');
+    await page.keyboard.press('Enter');
+    expect(await value()).toBe('if (a) {\n  \tb();\n \n  \tc();\n}\n');
+
+    for (let i = 0; i < 2; i++) await page.keyboard.press('ControlOrMeta+z');
+    expect(await value()).toBe('if (a) {\n  \tb();\n  \tc();\n}');
+
+    // Read-only editors aren't changed
+    await page.evaluate(() => document.querySelector('#editor').setAttribute('readonly', ''));
+    await page.keyboard.press('Enter');
+    expect(await value()).toBe('if (a) {\n  \tb();\n  \tc();\n}');
+  });
+
   test('scrolling with the mouse wheel keeps the text aligned', async ({ page }, testInfo) => {
     test.skip(!!testInfo.project.use.isMobile, 'No mouse wheel on mobile');
     await load(page, editor('style="height: 200px; width: 300px"'));
