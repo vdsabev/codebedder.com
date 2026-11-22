@@ -35,7 +35,8 @@ ${tag} > div {
 
 ${tag} > div > pre,
 ${tag} > div > textarea {
-  grid-area: 1 / 2 !important;
+  grid-row: 1 !important;
+  grid-column: 2 !important;
   box-sizing: border-box;
   width: auto !important;
   height: auto !important;
@@ -46,6 +47,11 @@ ${tag} > div > textarea {
   border-radius: 0 !important;
   padding: 0 !important;
   outline: 0;
+}
+
+/* The textarea spans the line numbers too, so its scrollbar is full width */
+${tag} > div > textarea {
+  grid-column: 1 / 3 !important;
 }
 
 /* Reserve the same space as the textarea's horizontal scrollbar, so auto height fits */
@@ -60,18 +66,21 @@ ${tag} > div > pre::-webkit-scrollbar {
   background: transparent;
 }
 
-/* Line numbers */
+/* Line numbers cover text scrolled under them, but not the scrollbar */
 ${tag} > div > div {
   grid-area: 1 / 1 !important;
+  position: relative;
+  z-index: 2;
   overflow: hidden !important;
-  margin: 0 !important;
+  margin: 0 0 var(--code-bedder-scrollbar-size, 0.5rem) !important;
   border: 0 !important;
   padding: 0 !important;
   font-size: inherit !important;
+  pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
   color: var(--code-bedder-line-number-color, hsla(0, 0%, 100%, 0.35));
-  background-color: var(--code-bedder-line-number-background, transparent);
+  background: var(--code-bedder-line-number-background, var(--code-bedder-background, hsl(70, 8%, 15%))) !important;
 }
 
 ${tag}[line-numbers='off'] > div > div {
@@ -101,8 +110,19 @@ ${tag} > div > textarea {
 }
 
 ${tag} > div > div > div {
-  padding-right: 0 !important;
+  pointer-events: auto;
+  width: calc(var(--code-bedder-digits) * 1ch + 1.25em);
+  padding-left: 0.5em !important;
+  padding-right: 0.75em !important;
   text-align: right !important;
+}
+
+${tag}:not([line-numbers='off']) > div > pre > code {
+  padding-left: 0.25em !important;
+}
+
+${tag}:not([line-numbers='off']) > div > textarea {
+  padding-left: calc(var(--code-bedder-digits) * 1ch + 1.5em) !important;
 }
 
 ${tag} > div > div > div,
@@ -239,7 +259,7 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
       this.gutter = document.createElement('div');
       this.gutter.setAttribute('aria-hidden', 'true');
       this.gutter.appendChild(document.createElement('div'));
-      this.gutter.addEventListener('click', (event) => this.selectLineAt(event.clientY));
+      this.gutter.firstChild.addEventListener('click', (event) => this.selectLineAt(event.clientY));
 
       const wrapper = document.createElement('div');
       wrapper.append(this.gutter, this.pre);
@@ -324,6 +344,7 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
       if (this._lines !== lines) {
         this._lines = lines;
         this.gutter.firstChild.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+        this.gutter.parentNode.style.setProperty('--code-bedder-digits', String(lines).length);
       }
 
       const highlight = this.getHighlighter();

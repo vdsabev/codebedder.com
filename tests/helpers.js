@@ -120,7 +120,7 @@ async function misalignment(page, selector) {
         const expectedTop = originTop + row * lineHeight + (lineHeight - rect.height) / 2;
         if (expectedTop < visibleTop || expectedTop > visibleBottom) return;
         measured++;
-        worst = Math.max(worst, Math.abs(rect.top - expectedTop), Math.max(0, rect.right - box.left));
+        worst = Math.max(worst, Math.abs(rect.top - expectedTop), Math.max(0, rect.right - el.pre.getBoundingClientRect().left));
       });
     }
 
@@ -133,7 +133,7 @@ async function misalignment(page, selector) {
 async function expectSameMetrics(page, selector) {
   const [code, textarea] = await page.evaluate((selector) => {
     const el = document.querySelector(selector);
-    const props = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'wordSpacing', 'tabSize', 'whiteSpace', 'paddingTop', 'paddingLeft', 'textIndent'];
+    const props = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'wordSpacing', 'tabSize', 'whiteSpace', 'paddingTop', 'textIndent'];
     const pick = (node) => {
       const style = getComputedStyle(node);
       return Object.fromEntries(props.map((prop) => [prop, style[prop]]));

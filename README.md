@@ -2,7 +2,7 @@
 
 # CodeBedder
 
-The simplest code editor on the web: a `<code-bedder>` web component that layers a transparent `<textarea>` over a syntax-highlighted `<pre><code>`. Bring your own highlighter (e.g. [PrismJS](https://prismjs.com) or [highlight.js](https://highlightjs.org)).
+A `<code-bedder>` web component: a transparent `<textarea>` over a syntax-highlighted `<pre><code>`. Bring your own highlighter (e.g. [PrismJS](https://prismjs.com), [highlight.js](https://highlightjs.org)).
 
 ## Usage
 
@@ -17,78 +17,56 @@ The simplest code editor on the web: a `<code-bedder>` web component that layers
 <script src="codebedder.js"></script>
 ```
 
-The initial code is the element's text content, so HTML must be escaped. A single leading newline is ignored, like in `<pre>` and `<textarea>`.
+The text content is the initial code (escape HTML; one leading newline is ignored).
 
-Pressing Enter keeps the indentation of the current line.
-
-### Attributes
-
-| Attribute       | Description                                                                         |
-| --------------- | ----------------------------------------------------------------------------------- |
-| `data-language` | Adds a `language-*` class to the `<code>` element. Defaults to `html`.              |
-| `onhighlight`   | Runs after every change with `this` (and `code`) set to the `<code>` element.       |
-| `name`          | Submits the value with a parent `<form>` - also supports `disabled` and form reset. |
-| `placeholder`   | Placeholder text for the empty editor.                                              |
-| `readonly`      | Makes the editor read-only.                                                         |
-| `aria-label`    | Accessible label for the editor.                                                    |
-| `line-numbers`  | Line numbers are shown by default - set to `off` to hide them.                      |
-
-### JavaScript
+| Attribute       | Description                                           |
+| --------------- | ----------------------------------------------------- |
+| `data-language` | `language-*` class on `<code>`. Default `html`.       |
+| `onhighlight`   | Runs on every change, with `this`/`code` as `<code>`. |
+| `name`          | Form value; `disabled` and form reset work too.       |
+| `placeholder`   | Placeholder text.                                     |
+| `readonly`      | Read-only.                                            |
+| `aria-label`    | Accessible label.                                     |
+| `line-numbers`  | `off` hides line numbers.                             |
 
 ```js
 const editor = document.querySelector('code-bedder');
-
-editor.value = 'const a = 1;'; // works before the editor has rendered too
+editor.value = 'const a = 1;'; // also works before rendering
 editor.on('input', () => console.log(editor.value));
 editor.on('load', () => editor.textarea.focus()); // runs immediately if already loaded
-
-// Use a function instead of the `onhighlight` attribute (no eval, CSP-friendly)
-editor.onhighlight = (code) => hljs.highlightElement(code);
+editor.onhighlight = (code) => hljs.highlightElement(code); // instead of the attribute
 ```
 
-Add `data-manual` to the script tag to skip auto-registration, then call `CodeBedder.register('my-editor')` with any tag name.
+`<script src="codebedder.js" data-manual>` skips auto-registration; then `CodeBedder.register('my-editor')`.
 
 ## Styling
 
-Size, spacing, borders etc. can be set directly on the element - the built-in host styles have zero specificity:
+Size, borders etc. can be set on the element directly. Text metrics and colors use these variables, settable on any ancestor. Set the background via the variable so line numbers match:
 
-```css
-code-bedder {
-  height: 300px;
-  border-radius: 0.5rem;
-}
-```
-
-Everything that has to match between the text and the caret is set via CSS variables, which can be declared on the element or any ancestor (like `:root`):
-
-| Variable                                          | Default                                  |
-| ------------------------------------------------- | ---------------------------------------- |
-| `--code-bedder-font-family`                       | `Consolas, Monaco, …, monospace`         |
-| `--code-bedder-font-size`                         | `14px`                                   |
-| `--code-bedder-line-height`                       | `1.5`                                    |
-| `--code-bedder-tab-size`                          | `2`                                      |
-| `--code-bedder-padding`                           | `1em`                                    |
-| `--code-bedder-background`                        | `hsl(70, 8%, 15%)`                       |
-| `--code-bedder-caret-color`                       | `#ffffff`                                |
-| `--code-bedder-placeholder-color`                 | `hsla(0, 0%, 100%, 0.4)`                 |
-| `--code-bedder-selection-background`              | `hsla(0, 0%, 100%, 0.2)`                 |
-| `--code-bedder-line-number-color`                 | `hsla(0, 0%, 100%, 0.35)`                |
-| `--code-bedder-line-number-background`            | `transparent`                            |
-| `--code-bedder-scrollbar-size`                    | `0.5rem`                                 |
-| `--code-bedder-scrollbar-radius`                  | `0.25rem`                                |
-| `--code-bedder-scrollbar-track-background`        | `hsl(215, 19%, 35%)`                     |
-| `--code-bedder-scrollbar-thumb-background`        | `hsl(215, 16%, 47%)`                     |
-| `--code-bedder-scrollbar-thumb-hover-background`  | `hsl(215, 20%, 65%)`                     |
-
-Note that highlighter themes may also set a background on the `<pre>`.
+| Variable                                         | Default                          |
+| ------------------------------------------------ | -------------------------------- |
+| `--code-bedder-font-family`                      | `Consolas, Monaco, …, monospace` |
+| `--code-bedder-font-size`                        | `14px`                           |
+| `--code-bedder-line-height`                      | `1.5`                            |
+| `--code-bedder-tab-size`                         | `2`                              |
+| `--code-bedder-padding`                          | `1em`                            |
+| `--code-bedder-background`                       | `hsl(70, 8%, 15%)`               |
+| `--code-bedder-caret-color`                      | `#ffffff`                        |
+| `--code-bedder-placeholder-color`                | `hsla(0, 0%, 100%, 0.4)`         |
+| `--code-bedder-selection-background`             | `hsla(0, 0%, 100%, 0.2)`         |
+| `--code-bedder-line-number-color`                | `hsla(0, 0%, 100%, 0.35)`        |
+| `--code-bedder-line-number-background`           | `var(--code-bedder-background)`  |
+| `--code-bedder-scrollbar-size`                   | `0.5rem`                         |
+| `--code-bedder-scrollbar-radius`                 | `0.25rem`                        |
+| `--code-bedder-scrollbar-track-background`       | `hsl(215, 19%, 35%)`             |
+| `--code-bedder-scrollbar-thumb-background`       | `hsl(215, 16%, 47%)`             |
+| `--code-bedder-scrollbar-thumb-hover-background` | `hsl(215, 20%, 65%)`             |
 
 ## Development
 
 ```sh
 npm install
-npm test           # Chromium desktop and mobile
-npm run test:all   # also Firefox and WebKit (Safari) - run `npx playwright install` first
+npm test           # Chromium desktop + mobile
+npm run test:all   # + Firefox, WebKit (needs `npx playwright install`)
 npm run serve      # http://localhost:4173
 ```
-
-Tests use real clicks and taps, with visible scrollbars, to check that the textarea receives input and that the caret stays aligned with the highlighted text. Run them before every push - master deploys automatically.

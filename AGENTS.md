@@ -6,5 +6,5 @@
 - Test user input with real clicks/taps (`press` in `tests/helpers.js`), never programmatic focus.
 - Use npm; keep `@playwright/test` pinned to an exact version.
 - No CI — tests run locally.
-- Update `README.md` when attributes, properties, events or `--code-bedder-*` variables change.
+- Update `README.md` when attributes, properties, events or `--code-bedder-*` variables change; keep it minimal.
 - Update the gzipped size claim in `index.html` when the library size changes noticeably.

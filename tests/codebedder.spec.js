@@ -18,7 +18,7 @@ test.describe('interaction', () => {
       for (let x = box.left + inset; x < box.right - inset; x += 20) {
         for (let y = box.top + inset; y < box.bottom - inset; y += 20) {
           const hit = document.elementFromPoint(x, y);
-          const inGutter = x < el.textarea.getBoundingClientRect().left;
+          const inGutter = el.gutter.firstChild.getBoundingClientRect().right > x && el.gutter.firstChild.getBoundingClientRect().bottom > y;
           if (inGutter ? !el.gutter.contains(hit) : hit !== el.textarea) misses.push([x, y]);
         }
       }
@@ -27,7 +27,7 @@ test.describe('interaction', () => {
     expect(misses).toEqual([]);
 
     const textarea = page.locator('#editor textarea');
-    for (const position of [{ x: 1, y: 2 }, { x: 150, y: 100 }, { x: 220, y: 170 }]) {
+    for (const position of [{ x: 60, y: 2 }, { x: 150, y: 100 }, { x: 220, y: 170 }]) {
       await page.evaluate(() => document.activeElement && document.activeElement.blur());
       // Playwright refuses to click if another element (e.g. the code layer) would receive it
       await press(textarea, testInfo, { position });
@@ -63,9 +63,9 @@ test.describe('interaction', () => {
     const point = await page.evaluate(() => {
       const { gutter, textarea } = document.querySelector('#editor');
       const style = getComputedStyle(textarea);
-      return { x: gutter.clientWidth / 2, y: parseFloat(style.paddingTop) + 7.5 * parseFloat(style.lineHeight) - textarea.scrollTop, row: 7 };
+      return { x: gutter.clientWidth / 2, y: parseFloat(style.paddingTop) + 7.5 * parseFloat(style.lineHeight), row: 7 };
     });
-    await press(page.locator('#editor > div > div'), testInfo, { position: { x: point.x, y: point.y } });
+    await press(page.locator('#editor > div > div > div'), testInfo, { position: { x: point.x, y: point.y } });
     await expect(page.locator('#editor textarea')).toBeFocused();
     const caret = await page.evaluate(() => {
       const { textarea } = document.querySelector('#editor');
@@ -221,7 +221,7 @@ test.describe('layout', () => {
     await load(page, editor(), { head: '<style>:root { --code-bedder-font-size: 21px; --code-bedder-padding: 5px; }</style>' });
     const style = await page.evaluate(() => {
       const s = getComputedStyle(document.querySelector('#editor').textarea);
-      return { fontSize: s.fontSize, padding: s.paddingLeft };
+      return { fontSize: s.fontSize, padding: s.paddingTop };
     });
     expect(style).toEqual({ fontSize: '21px', padding: '5px' });
   });
@@ -329,13 +329,38 @@ test.describe('API', () => {
   test('line numbers can be turned off and on', async ({ page }) => {
     await load(page, editor('style="height: 200px; width: 300px" line-numbers="off"'));
     const gutter = page.locator('#editor > div > div');
-    const textareaLeft = () => page.evaluate(() => document.querySelector('#editor').textarea.getBoundingClientRect().left);
+    const layout = () =>
+      page.evaluate(() => {
+        const { gutter, pre, textarea } = document.querySelector('#editor');
+        return { textarea: textarea.getBoundingClientRect().left, code: pre.getBoundingClientRect().left, gutterHeight: gutter.clientHeight, textareaHeight: textarea.clientHeight };
+      });
     await expect(gutter).toBeHidden();
-    expect(await textareaLeft()).toBe(0);
+    expect(await layout()).toMatchObject({ textarea: 0, code: 0 });
+    expect(await misalignment(page, '#editor')).toBeLessThanOrEqual(1);
 
     await page.evaluate(() => document.querySelector('#editor').removeAttribute('line-numbers'));
     await expect(gutter).toBeVisible();
-    expect(await textareaLeft()).toBeGreaterThan(0);
+    const on = await layout();
+    // The scrollbar spans the line numbers too, which stop above it
+    expect(on.textarea).toBe(0);
+    expect(on.code).toBeGreaterThan(0);
+    expect(on.gutterHeight).toBeLessThanOrEqual(on.textareaHeight);
+    // The scrollbar is painted below the line numbers, not their background
+    const [scrollbar, numbers] = await page.evaluate(async (png) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${png}`;
+      await image.decode();
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+      const { gutter, textarea } = document.querySelector('#editor');
+      const scale = image.width / document.querySelector('#editor').offsetWidth;
+      const pixel = (x, y) => [...context.getImageData(Math.round(x * scale), Math.round(y * scale), 1, 1).data].join();
+      return [pixel(4, textarea.offsetHeight - 2), pixel(4, gutter.clientHeight / 2)];
+    }, (await page.locator('#editor').screenshot()).toString('base64'));
+    expect(scrollbar).not.toBe(numbers);
     expect(await misalignment(page, '#editor')).toBeLessThanOrEqual(1);
   });
 
