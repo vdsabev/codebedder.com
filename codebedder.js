@@ -50,6 +50,7 @@ ${tag} > div > textarea {
 /* Reserve the same space as the textarea's horizontal scrollbar, so auto height fits */
 ${tag} > div > pre {
   overflow: scroll hidden !important;
+  pointer-events: none;
 }
 
 ${tag} > div > pre::-webkit-scrollbar {
@@ -84,6 +85,8 @@ ${tag} > div > pre > code {
 }
 
 ${tag} > div > textarea {
+  position: relative;
+  z-index: 1;
   resize: none;
   background: transparent !important;
   color: transparent !important;
