@@ -7,7 +7,7 @@ const editor = (attributes = '', content = code) =>
   `<code-bedder id="editor" ${attributes} data-language="javascript" onhighlight="Prism.highlightElement(this)">${escape(content)}</code-bedder>`;
 
 test.describe('interaction', () => {
-  test('pointer input anywhere inside the border and padding reaches the textarea', async ({ page }, testInfo) => {
+  test('pointer input anywhere inside the border and padding reaches the textarea or line numbers', async ({ page }, testInfo) => {
     await load(page, editor('style="height: 200px; width: 300px; padding: 12px; border: 3px solid"'));
 
     const misses = await page.evaluate(() => {
@@ -17,7 +17,9 @@ test.describe('interaction', () => {
       const misses = [];
       for (let x = box.left + inset; x < box.right - inset; x += 20) {
         for (let y = box.top + inset; y < box.bottom - inset; y += 20) {
-          if (document.elementFromPoint(x, y) !== el.textarea) misses.push([x, y]);
+          const hit = document.elementFromPoint(x, y);
+          const inGutter = x < el.textarea.getBoundingClientRect().left;
+          if (inGutter ? !el.gutter.contains(hit) : hit !== el.textarea) misses.push([x, y]);
         }
       }
       return misses;
@@ -25,7 +27,7 @@ test.describe('interaction', () => {
     expect(misses).toEqual([]);
 
     const textarea = page.locator('#editor textarea');
-    for (const position of [{ x: 2, y: 2 }, { x: 150, y: 100 }, { x: 270, y: 170 }]) {
+    for (const position of [{ x: 1, y: 2 }, { x: 150, y: 100 }, { x: 220, y: 170 }]) {
       await page.evaluate(() => document.activeElement && document.activeElement.blur());
       // Playwright refuses to click if another element (e.g. the code layer) would receive it
       await press(textarea, testInfo, { position });
@@ -52,6 +54,24 @@ test.describe('interaction', () => {
     expect(result.code).toBe(result.value);
     expect(result.tokens).toBeGreaterThan(0);
     expect(result.inputs).toBeGreaterThan(0);
+  });
+
+  test('clicking a line number puts the caret at the start of that line', async ({ page }, testInfo) => {
+    await load(page, editor('style="height: 200px; width: 300px"'));
+    await scrollEditor(page, '#editor', { top: 100, left: 'max' });
+    // The middle of line 8 (row 7), accounting for padding and scroll
+    const point = await page.evaluate(() => {
+      const { gutter, textarea } = document.querySelector('#editor');
+      const style = getComputedStyle(textarea);
+      return { x: gutter.clientWidth / 2, y: parseFloat(style.paddingTop) + 7.5 * parseFloat(style.lineHeight) - textarea.scrollTop, row: 7 };
+    });
+    await press(page.locator('#editor > div > div'), testInfo, { position: { x: point.x, y: point.y } });
+    await expect(page.locator('#editor textarea')).toBeFocused();
+    const caret = await page.evaluate(() => {
+      const { textarea } = document.querySelector('#editor');
+      return { start: textarea.selectionStart, end: textarea.selectionEnd, row: textarea.value.slice(0, textarea.selectionStart).split('\n').length - 1, column: textarea.value.slice(0, textarea.selectionStart).split('\n').pop().length };
+    });
+    expect(caret).toEqual({ start: caret.end, end: caret.end, row: point.row, column: 0 });
   });
 
   test('Enter keeps the indentation of the current line and can be undone', async ({ page }, testInfo) => {
@@ -101,6 +121,7 @@ test.describe('interaction', () => {
 test.describe('alignment', () => {
   const scenarios = {
     'Prism highlighting': { attributes: 'style="height: 200px; width: 300px"' },
+    'without line numbers': { attributes: 'style="height: 200px; width: 300px" line-numbers="off"' },
     'no highlighter': { body: `<code-bedder id="editor" style="height: 200px; width: 300px">${escape(code)}</code-bedder>` },
     'padding and border on the host': { attributes: 'style="height: 200px; width: 300px; padding: 17px 9px; border: 3px solid red"' },
     'display: block on the host': { attributes: 'style="height: 200px; width: 300px; display: block"' },
@@ -305,9 +326,23 @@ test.describe('API', () => {
     await expect(page.locator('#editor code')).toHaveClass(/language-css/);
   });
 
+  test('line numbers can be turned off and on', async ({ page }) => {
+    await load(page, editor('style="height: 200px; width: 300px" line-numbers="off"'));
+    const gutter = page.locator('#editor > div > div');
+    const textareaLeft = () => page.evaluate(() => document.querySelector('#editor').textarea.getBoundingClientRect().left);
+    await expect(gutter).toBeHidden();
+    expect(await textareaLeft()).toBe(0);
+
+    await page.evaluate(() => document.querySelector('#editor').removeAttribute('line-numbers'));
+    await expect(gutter).toBeVisible();
+    expect(await textareaLeft()).toBeGreaterThan(0);
+    expect(await misalignment(page, '#editor')).toBeLessThanOrEqual(1);
+  });
+
   test('the highlighted copy is hidden from assistive technology', async ({ page }) => {
     await load(page, editor());
     await expect(page.locator('#editor pre')).toHaveAttribute('aria-hidden', 'true');
+    await expect(page.locator('#editor > div > div')).toHaveAttribute('aria-hidden', 'true');
   });
 
   test('custom tag names get styles too', async ({ page }) => {

@@ -28,14 +28,14 @@
 ${tag} > div {
   display: grid !important;
   font-size: inherit !important;
-  grid-template: minmax(0, 1fr) / minmax(0, 1fr) !important;
+  grid-template: minmax(0, 1fr) / auto minmax(0, 1fr) !important;
   flex: 1 1 auto;
   min-height: 0;
 }
 
 ${tag} > div > pre,
 ${tag} > div > textarea {
-  grid-area: 1 / 1 !important;
+  grid-area: 1 / 2 !important;
   box-sizing: border-box;
   width: auto !important;
   height: auto !important;
@@ -60,6 +60,25 @@ ${tag} > div > pre::-webkit-scrollbar {
   background: transparent;
 }
 
+/* Line numbers */
+${tag} > div > div {
+  grid-area: 1 / 1 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  user-select: none;
+  -webkit-user-select: none;
+  color: var(--code-bedder-line-number-color, hsla(0, 0%, 100%, 0.35));
+  background-color: var(--code-bedder-line-number-background, transparent);
+}
+
+${tag}[line-numbers='off'] > div > div {
+  display: none !important;
+}
+
+${tag} > div > div > div,
 ${tag} > div > pre > code,
 ${tag} > div > textarea {
   box-sizing: border-box;
@@ -81,6 +100,12 @@ ${tag} > div > textarea {
   tab-size: var(--code-bedder-tab-size, 2) !important;
 }
 
+${tag} > div > div > div {
+  padding-right: 0 !important;
+  text-align: right !important;
+}
+
+${tag} > div > div > div,
 ${tag} > div > pre > code {
   display: block;
   will-change: transform;
@@ -211,8 +236,13 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
       this.code = document.createElement('code');
       this.pre.appendChild(this.code);
 
+      this.gutter = document.createElement('div');
+      this.gutter.setAttribute('aria-hidden', 'true');
+      this.gutter.appendChild(document.createElement('div'));
+      this.gutter.addEventListener('click', (event) => this.selectLineAt(event.clientY));
+
       const wrapper = document.createElement('div');
-      wrapper.appendChild(this.pre);
+      wrapper.append(this.gutter, this.pre);
       this.appendChild(wrapper);
 
       this.textarea = document.createElement('textarea');
@@ -290,6 +320,12 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
       // pre ignores an empty new line at the end which breaks scrolling - an extra character fixes it
       code.textContent = value + (value.endsWith('\n') ? ' ' : '');
 
+      const lines = value.split('\n').length;
+      if (this._lines !== lines) {
+        this._lines = lines;
+        this.gutter.firstChild.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+      }
+
       const highlight = this.getHighlighter();
       if (highlight) {
         highlight.call(code, code, this);
@@ -300,8 +336,21 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
 
     // A transform keeps the layers aligned regardless of scrollbar sizes or the pre's overflow
     syncScroll() {
-      const { code, textarea } = this;
+      const { code, gutter, textarea } = this;
       code.style.transform = `translate(${-textarea.scrollLeft}px, ${-textarea.scrollTop}px)`;
+      gutter.firstChild.style.transform = `translateY(${-textarea.scrollTop}px)`;
+    }
+
+    // Clicking a line number puts the caret at the start of that line
+    selectLineAt(clientY) {
+      const { textarea } = this;
+      const style = getComputedStyle(textarea);
+      const top = textarea.getBoundingClientRect().top + textarea.clientTop + parseFloat(style.paddingTop);
+      const lines = textarea.value.split('\n');
+      const row = Math.max(0, Math.min(lines.length - 1, Math.floor((clientY - top + textarea.scrollTop) / parseFloat(style.lineHeight))));
+      const start = lines.slice(0, row).join('\n').length + (row > 0 ? 1 : 0);
+      textarea.focus({ preventScroll: true });
+      textarea.setSelectionRange(start, start);
     }
 
     getHighlighter() {

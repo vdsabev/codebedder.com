@@ -104,6 +104,26 @@ async function misalignment(page, selector) {
       }
     });
 
+    // Line numbers must sit on the same rows, left of the text
+    const gutter = el.gutter && el.gutter.firstChild;
+    if (gutter && gutter.getClientRects().length) {
+      const numbers = gutter.textContent.split('\n');
+      if (numbers.length !== lines.length) throw new Error(`${numbers.length} line numbers for ${lines.length} lines`);
+      const node = gutter.firstChild;
+      numbers.forEach((number, row) => {
+        if (number !== String(row + 1)) throw new Error(`Line ${row + 1} is numbered ${number}`);
+        const offset = numbers.slice(0, row).join('\n').length + (row > 0 ? 1 : 0);
+        const range = document.createRange();
+        range.setStart(node, offset);
+        range.setEnd(node, offset + number.length);
+        const rect = range.getBoundingClientRect();
+        const expectedTop = originTop + row * lineHeight + (lineHeight - rect.height) / 2;
+        if (expectedTop < visibleTop || expectedTop > visibleBottom) return;
+        measured++;
+        worst = Math.max(worst, Math.abs(rect.top - expectedTop), Math.max(0, rect.right - box.left));
+      });
+    }
+
     if (measured === 0) throw new Error('No visible characters were measured');
     return Math.round(worst * 10) / 10;
   }, selector);

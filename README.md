@@ -31,6 +31,7 @@ Pressing Enter keeps the indentation of the current line.
 | `placeholder`   | Placeholder text for the empty editor.                                              |
 | `readonly`      | Makes the editor read-only.                                                         |
 | `aria-label`    | Accessible label for the editor.                                                    |
+| `line-numbers`  | Line numbers are shown by default - set to `off` to hide them.                      |
 
 ### JavaScript
 
@@ -71,6 +72,8 @@ Everything that has to match between the text and the caret is set via CSS varia
 | `--code-bedder-caret-color`                       | `#ffffff`                                |
 | `--code-bedder-placeholder-color`                 | `hsla(0, 0%, 100%, 0.4)`                 |
 | `--code-bedder-selection-background`              | `hsla(0, 0%, 100%, 0.2)`                 |
+| `--code-bedder-line-number-color`                 | `hsla(0, 0%, 100%, 0.35)`                |
+| `--code-bedder-line-number-background`            | `transparent`                            |
 | `--code-bedder-scrollbar-size`                    | `0.5rem`                                 |
 | `--code-bedder-scrollbar-radius`                  | `0.25rem`                                |
 | `--code-bedder-scrollbar-track-background`        | `hsl(215, 19%, 35%)`                     |
