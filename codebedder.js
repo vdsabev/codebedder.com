@@ -29,7 +29,6 @@ ${tag} > div {
   display: grid !important;
   grid-template: minmax(0, 1fr) / minmax(0, 1fr) !important;
   flex: 1 1 auto;
-  height: 100%;
   min-height: 0;
 }
 
@@ -48,8 +47,14 @@ ${tag} > div > textarea {
   outline: 0;
 }
 
+/* Reserve the same space as the textarea's horizontal scrollbar, so auto height fits */
 ${tag} > div > pre {
-  overflow: hidden !important;
+  overflow: scroll hidden !important;
+}
+
+${tag} > div > pre::-webkit-scrollbar {
+  height: var(--code-bedder-scrollbar-size, 0.5rem);
+  background: transparent;
 }
 
 ${tag} > div > pre > code,
@@ -114,6 +119,11 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
 }
 
 @supports not selector(::-webkit-scrollbar) {
+  ${tag} > div > pre {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
   ${tag} > div > textarea {
     scrollbar-width: thin;
     scrollbar-color: var(--code-bedder-scrollbar-thumb-background, hsl(215, 16%, 47%))
