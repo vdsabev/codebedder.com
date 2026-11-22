@@ -6,9 +6,7 @@ const showScrollbars = { launchOptions: { ignoreDefaultArgs: ['--hide-scrollbars
 module.exports = defineConfig({
   testDir: 'tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  reporter: 'list',
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'retain-on-failure',
@@ -25,6 +23,6 @@ module.exports = defineConfig({
   webServer: {
     command: 'node tests/server.js',
     url: 'http://localhost:4173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
   },
 });

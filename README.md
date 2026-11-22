@@ -81,10 +81,9 @@ Note that highlighter themes may also set a background on the `<pre>`.
 
 ```sh
 npm install
-npx playwright install   # first time only
-npm test                 # Chromium, Firefox and WebKit - desktop, phone and tablet
-npm run test:chromium    # just Chromium desktop and mobile
-npm run serve            # http://localhost:4173
+npm test           # Chromium desktop and mobile
+npm run test:all   # also Firefox and WebKit (Safari) - run `npx playwright install` first
+npm run serve      # http://localhost:4173
 ```
 
-Tests use real clicks and taps, with visible scrollbars, to check that the textarea receives input and that the caret stays aligned with the highlighted text. They run on every push and pull request.
+Tests use real clicks and taps, with visible scrollbars, to check that the textarea receives input and that the caret stays aligned with the highlighted text. Run them before every push - master deploys automatically.
