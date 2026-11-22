@@ -7,32 +7,30 @@ const editor = (attributes = '', content = code) =>
   `<code-bedder id="editor" ${attributes} data-language="javascript" onhighlight="Prism.highlightElement(this)">${escape(content)}</code-bedder>`;
 
 test.describe('interaction', () => {
-  test('clicking or tapping anywhere in the editor focuses the textarea', async ({ page }, testInfo) => {
-    await load(page, editor('style="height: 200px; width: 300px"'));
-    const textarea = page.locator('#editor textarea');
+  test('pointer input anywhere inside the border and padding reaches the textarea', async ({ page }, testInfo) => {
+    await load(page, editor('style="height: 200px; width: 300px; padding: 12px; border: 3px solid"'));
 
-    for (const position of [{ x: 10, y: 10 }, { x: 150, y: 100 }, { x: 290, y: 180 }]) {
-      await page.evaluate(() => document.activeElement && document.activeElement.blur());
-      // Playwright refuses to click if another element (e.g. the code layer) would receive it
-      await press(textarea, testInfo, { position });
-      await expect(textarea).toBeFocused();
-    }
-  });
-
-  test('the textarea is the top element across the whole editor', async ({ page }) => {
-    await load(page, editor('style="height: 200px; width: 300px; padding: 12px"'));
     const misses = await page.evaluate(() => {
       const el = document.querySelector('#editor');
-      const box = el.textarea.getBoundingClientRect();
+      const box = el.getBoundingClientRect();
+      const inset = 3 + 12;
       const misses = [];
-      for (let x = box.left + 1; x < box.right; x += 25) {
-        for (let y = box.top + 1; y < box.bottom; y += 25) {
+      for (let x = box.left + inset; x < box.right - inset; x += 20) {
+        for (let y = box.top + inset; y < box.bottom - inset; y += 20) {
           if (document.elementFromPoint(x, y) !== el.textarea) misses.push([x, y]);
         }
       }
       return misses;
     });
     expect(misses).toEqual([]);
+
+    const textarea = page.locator('#editor textarea');
+    for (const position of [{ x: 2, y: 2 }, { x: 150, y: 100 }, { x: 270, y: 170 }]) {
+      await page.evaluate(() => document.activeElement && document.activeElement.blur());
+      // Playwright refuses to click if another element (e.g. the code layer) would receive it
+      await press(textarea, testInfo, { position });
+      await expect(textarea).toBeFocused();
+    }
   });
 
   test('typing updates the value, the highlighted code and fires input', async ({ page }, testInfo) => {
@@ -134,44 +132,26 @@ test.describe('alignment', () => {
 });
 
 test.describe('layout', () => {
-  test('auto height fits the content without scrolling', async ({ page }) => {
-    await load(page, editor('style="width: 300px"', longCode(12)));
-    const sizes = await page.evaluate(() => {
-      const { textarea } = document.querySelector('#editor');
-      return { client: textarea.clientHeight, scroll: textarea.scrollHeight, lines: textarea.value.split('\n').length, lineHeight: parseFloat(getComputedStyle(textarea).lineHeight) };
-    });
-    expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
-    expect(sizes.client).toBeGreaterThanOrEqual(sizes.lines * sizes.lineHeight);
-  });
+  const autoHeightLayouts = {
+    'on its own': editor('style="width: 300px"', longCode(12)),
+    'in a grid with a min-height (like the homepage)': `<section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100px; width: 600px">
+      ${editor('', longCode(12))}
+      <iframe style="width: 100%; height: 100%; border: 0"></iframe>
+    </section>`,
+  };
 
-  test('auto height in a grid with a min-height (like the homepage) fits the content', async ({ page }) => {
-    await load(
-      page,
-      `<section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100px; width: 600px">
-        ${editor('', longCode(20))}
-        <iframe style="width: 100%; height: 100%; border: 0"></iframe>
-      </section>`
-    );
-    const sizes = await page.evaluate(() => {
-      const { textarea } = document.querySelector('#editor');
-      return { client: textarea.clientHeight, scroll: textarea.scrollHeight };
+  for (const [name, body] of Object.entries(autoHeightLayouts)) {
+    test(`auto height fits the content without scrolling - ${name}`, async ({ page }) => {
+      await load(page, body);
+      const sizes = await page.evaluate(() => {
+        const { textarea } = document.querySelector('#editor');
+        const lines = textarea.value.split('\n').length;
+        return { client: textarea.clientHeight, scroll: textarea.scrollHeight, content: lines * parseFloat(getComputedStyle(textarea).lineHeight) };
+      });
+      expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
+      expect(sizes.client).toBeGreaterThanOrEqual(sizes.content);
     });
-    expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
-  });
-
-  test('a fixed size is filled entirely by the textarea', async ({ page }) => {
-    await load(page, editor('style="height: 200px; width: 300px; padding: 10px; border: 2px solid"'));
-    const [host, textarea] = await page.evaluate(() => {
-      const el = document.querySelector('#editor');
-      const host = el.getBoundingClientRect();
-      const ta = el.textarea.getBoundingClientRect();
-      return [
-        { width: host.width - 24, height: host.height - 24 },
-        { width: ta.width, height: ta.height },
-      ];
-    });
-    expect(textarea).toEqual(host);
-  });
+  }
 
   test('external CSS overrides the default host styles', async ({ page }) => {
     await load(page, editor(), { head: '<style>code-bedder { height: 123px; background-color: rgb(1, 2, 3); }</style>' });

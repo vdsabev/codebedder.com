@@ -1,0 +1,10 @@
+- Library: `codebedder.js` — single file, no dependencies, no build step; keep it that way.
+- Site: `index.html`, `index.js`, `style.css`; pushing to master deploys it.
+- `prism.js` / `prism.css` are vendored PrismJS builds — don't edit.
+- Run `npm test` before every push; `npm run test:all` for Firefox/WebKit (needs `npx playwright install`).
+- Library tests: `tests/codebedder.spec.js`; homepage tests: `tests/site.spec.js`; shared utilities: `tests/helpers.js`.
+- Test user input with real clicks/taps (`press` in `tests/helpers.js`), never programmatic focus.
+- Use npm; keep `@playwright/test` pinned to an exact version.
+- No CI — tests run locally.
+- Update `README.md` when attributes, properties, events or `--code-bedder-*` variables change.
+- Update the gzipped size claim in `index.html` when the library size changes noticeably.
