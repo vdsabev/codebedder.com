@@ -25,7 +25,9 @@
   background-color: var(--code-bedder-background, hsl(70, 8%, 15%));
 }
 
+/* Keep the layers' z-indexes from competing with the page */
 ${tag} > div {
+  isolation: isolate !important;
   display: grid !important;
   font-size: inherit !important;
   grid-template: minmax(0, 1fr) / auto minmax(0, 1fr) !important;

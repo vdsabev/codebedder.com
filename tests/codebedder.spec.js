@@ -208,6 +208,13 @@ test.describe('layout', () => {
     });
   }
 
+  test('page elements with a z-index stay above the editor, like a sticky header', async ({ page }) => {
+    await load(page, `<header style="position: sticky; top: 0; z-index: 1; height: 60px; background: white">Header</header>${editor('style="height: 200px; width: 300px"')}<div style="height: 2000px"></div>`);
+    await page.evaluate(() => window.scrollTo(0, 100));
+    const hits = await page.evaluate(() => [10, 100, 250].map((x) => document.elementFromPoint(x, 30).tagName));
+    expect(hits).toEqual(['HEADER', 'HEADER', 'HEADER']);
+  });
+
   test('external CSS overrides the default host styles', async ({ page }) => {
     await load(page, editor(), { head: '<style>code-bedder { height: 123px; background-color: rgb(1, 2, 3); }</style>' });
     const style = await page.evaluate(() => {
