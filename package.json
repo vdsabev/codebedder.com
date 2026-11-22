@@ -1,0 +1,13 @@
+{
+  "name": "codebedder",
+  "private": true,
+  "description": "The simplest code editor on the web",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium --project=mobile-chrome",
+    "serve": "node tests/server.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

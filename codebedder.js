@@ -27,6 +27,7 @@
 
 ${tag} > div {
   display: grid !important;
+  font-size: inherit !important;
   grid-template: minmax(0, 1fr) / minmax(0, 1fr) !important;
   flex: 1 1 auto;
   min-height: 0;
@@ -50,6 +51,7 @@ ${tag} > div > textarea {
 /* Reserve the same space as the textarea's horizontal scrollbar, so auto height fits */
 ${tag} > div > pre {
   overflow: scroll hidden !important;
+  font-size: inherit !important;
   pointer-events: none;
 }
 

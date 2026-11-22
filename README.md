@@ -76,3 +76,15 @@ Everything that has to match between the text and the caret is set via CSS varia
 | `--code-bedder-scrollbar-thumb-hover-background`  | `hsl(215, 20%, 65%)`                     |
 
 Note that highlighter themes may also set a background on the `<pre>`.
+
+## Development
+
+```sh
+npm install
+npx playwright install   # first time only
+npm test                 # Chromium, Firefox and WebKit - desktop, phone and tablet
+npm run test:chromium    # just Chromium desktop and mobile
+npm run serve            # http://localhost:4173
+```
+
+Tests use real clicks and taps, with visible scrollbars, to check that the textarea receives input and that the caret stays aligned with the highlighted text. They run on every push and pull request.
