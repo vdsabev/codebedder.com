@@ -91,7 +91,7 @@
 
       <ul>
         <li>
-          <b>Lightweight</b> - <i>1.54KB</i> gzipped, then add syntax
+          <b>Lightweight</b> - under <i>3KB</i> gzipped, then add syntax
           highlighting with a library like
           <a href="https://prismjs.com/#supported-languages" target="_blank">
             PrismJS
@@ -142,6 +142,15 @@
 
       <!-- prettier-ignore -->
       <pre><code class="language-html">&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &lt;link href=&quot;prism.css&quot; rel=&quot;stylesheet&quot; /&gt;&#13;&#10;  &lt/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;code-bedder data-language=&quot;html&quot; onhighlight=&quot;Prism.highlightElement(this)&quot;&gt;YOUR_ESCAPED_HTML_CODE_HERE&lt;/code-bedder&gt;&#13;&#10;    &lt;script src=&quot;prism.js&quot;&gt;&lt;/script&gt;&#13;&#10;    &lt;script src=&quot;codebedder.js&quot;&gt;&lt;/script&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;</code></pre>
+
+      <p>
+        Style it like any other element, e.g. <code>code-bedder { height: 300px; }</code>,
+        and tweak the font, padding, colors and more with CSS variables like
+        <code>--code-bedder-font-size</code> or <code>--code-bedder-padding</code>.
+        See the
+        <a href="https://github.com/vdsabev/codebedder.com#readme" target="_blank">README</a>
+        for all options.
+      </p>
 
       <p><i>Psst, you can also check out the source code for this page.</i></p>
     </section>
