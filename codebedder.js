@@ -293,7 +293,8 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
 
       this.textarea.addEventListener('input', () => this.update());
       this.textarea.addEventListener('scroll', () => this.syncScroll());
-      this.textarea.addEventListener('keydown', (event) => this.keepIndent(event));
+      this.textarea.addEventListener('keydown', (event) => this.onKeydown(event));
+      this.textarea.addEventListener('focus', () => (this.tabReleased = false));
 
       this.update();
 
@@ -301,20 +302,78 @@ ${tag} > div > textarea::-webkit-scrollbar-thumb:hover {
       this.dispatchEvent(new Event('load'));
     }
 
+    onKeydown(event) {
+      const { textarea } = this;
+      if (['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) return;
+      // Escape lets the next Tab move focus, so keyboard users aren't trapped
+      const released = this.tabReleased;
+      this.tabReleased = event.key === 'Escape';
+      if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.defaultPrevented || textarea.readOnly || textarea.disabled) return;
+      if (event.key === 'Enter') this.keepIndent(event);
+      if (event.key === 'Tab' && !released && this.getAttribute('tab-indent') !== 'off') this.indent(event);
+    }
+
     // Enter continues the indentation of the current line
     keepIndent(event) {
-      const { textarea } = this;
-      if (event.key !== 'Enter' || event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
-      if (event.defaultPrevented || textarea.readOnly || textarea.disabled) return;
-
-      const { value, selectionStart } = textarea;
+      const { value, selectionStart, selectionEnd } = this.textarea;
       const indent = value.slice(value.lastIndexOf('\n', selectionStart - 1) + 1, selectionStart).match(/^[ \t]*/)[0];
       if (!indent) return;
-
       event.preventDefault();
-      // execCommand keeps the native undo history; fall back where it's unsupported
-      if (!document.execCommand('insertText', false, '\n' + indent)) {
-        textarea.setRangeText('\n' + indent, selectionStart, textarea.selectionEnd, 'end');
+      this.replace(selectionStart, selectionEnd, '\n' + indent);
+    }
+
+    // Tab indents and Shift+Tab outdents the selected lines; Tab without a selection inserts an indent
+    indent(event) {
+      event.preventDefault();
+      const { textarea } = this;
+      const { value, selectionStart: start, selectionEnd: end } = textarea;
+      const size = parseInt(getComputedStyle(textarea).tabSize) || 2;
+      const tabs = this.getAttribute('indent') === 'tabs';
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+
+      if (start === end && !event.shiftKey) {
+        let column = 0;
+        for (const char of value.slice(lineStart, start)) column = char === '\t' ? (Math.floor(column / size) + 1) * size : column + 1;
+        this.replace(start, end, tabs ? '\t' : ' '.repeat(size - (column % size)));
+        return;
+      }
+
+      // A selection ending at the start of a line doesn't include that line
+      const last = end > start && value[end - 1] === '\n' ? end - 1 : end;
+      const lineEnd = value.indexOf('\n', last) < 0 ? value.length : value.indexOf('\n', last);
+      const unit = tabs ? '\t' : ' '.repeat(size);
+      const lines = value.slice(lineStart, lineEnd).split('\n');
+      const outdent = new RegExp(`^(\t| {1,${size}})`);
+      const changes = lines.map((line) => (event.shiftKey ? -(line.match(outdent) || [''])[0].length : line ? unit.length : 0));
+      if (!changes.some(Boolean)) return;
+
+      // Map an old position to where it ends up; a selection starting at a line start stays there
+      const map = (position, keepAtLineStart) => {
+        let offset = lineStart;
+        let shift = 0;
+        for (let i = 0; i < lines.length; i++) {
+          if (position <= offset + lines[i].length || i === lines.length - 1) {
+            const change = changes[i];
+            if (change < 0) return position + shift - Math.min(-change, position - offset);
+            return position + shift + (keepAtLineStart && position === offset ? 0 : change);
+          }
+          shift += changes[i];
+          offset += lines[i].length + 1;
+        }
+      };
+      const text = lines.map((line, i) => (changes[i] < 0 ? line.slice(-changes[i]) : changes[i] ? unit + line : line)).join('\n');
+      const [newStart, newEnd] = [map(start, start !== end), map(end, false)];
+      this.replace(lineStart, lineEnd, text);
+      textarea.setSelectionRange(newStart, newEnd);
+    }
+
+    // execCommand keeps the native undo history; fall back where it's unsupported
+    replace(start, end, text) {
+      const { textarea } = this;
+      textarea.setSelectionRange(start, end);
+      if (!document.execCommand(text ? 'insertText' : 'delete', false, text)) {
+        textarea.setRangeText(text, start, end, 'end');
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
       }
     }

@@ -108,6 +108,92 @@ test.describe('interaction', () => {
     expect(await value()).toBe('if (a) {\n  \tb();\n  \tc();\n}');
   });
 
+  test('Tab indents and Shift+Tab outdents, each undoable in one step', async ({ page }, testInfo) => {
+    await load(page, editor('style="height: 200px; width: 300px"', 'a\nb\n\nc'));
+    const textarea = page.locator('#editor textarea');
+    const state = () => page.evaluate(() => { const { value, selectionStart, selectionEnd } = document.querySelector('#editor').textarea; return [value, selectionStart, selectionEnd]; });
+
+    await press(textarea, testInfo);
+    await page.keyboard.press('ControlOrMeta+Home');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Tab');
+    expect(await state()).toEqual(['a \nb\n\nc', 2, 2]); // pads to the next tab stop
+    await page.keyboard.press('Shift+Tab');
+    expect(await state()).toEqual(['a \nb\n\nc', 2, 2]); // nothing to outdent
+    await page.keyboard.press('ControlOrMeta+z');
+    expect(await state()).toEqual(['a\nb\n\nc', 1, 1]);
+
+    // Selected lines are indented, skipping empty ones, and stay selected
+    await page.keyboard.press('ControlOrMeta+a');
+    await page.keyboard.press('Tab');
+    expect(await state()).toEqual(['  a\n  b\n\n  c', 0, 12]);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    expect(await state()).toEqual(['  a\n  b\n\n  c', 0, 12]);
+    await page.keyboard.press('Shift+Tab');
+    expect(await state()).toEqual(['a\nb\n\nc', 0, 6]);
+    await page.keyboard.press('ControlOrMeta+z');
+    expect((await state())[0]).toBe('  a\n  b\n\n  c');
+
+    // Shift+Tab outdents the caret's line; Tab with a selection ending at a line start skips that line
+    await page.evaluate(() => document.querySelector('#editor').textarea.setSelectionRange(5, 5));
+    await page.keyboard.press('Shift+Tab');
+    expect(await state()).toEqual(['  a\nb\n\n  c', 4, 4]);
+    await page.evaluate(() => document.querySelector('#editor').textarea.setSelectionRange(0, 4));
+    await page.keyboard.press('Tab');
+    expect(await state()).toEqual(['    a\nb\n\n  c', 0, 6]);
+  });
+
+  test('indent="tabs" indents with tabs and outdents tabs or spaces', async ({ page }, testInfo) => {
+    await load(page, editor('indent="tabs" style="height: 200px; width: 300px"', 'a\n  b'));
+    const value = () => page.evaluate(() => document.querySelector('#editor').value);
+    await press(page.locator('#editor textarea'), testInfo);
+    await page.keyboard.press('ControlOrMeta+a');
+    await page.keyboard.press('Tab');
+    expect(await value()).toBe('\ta\n\t  b');
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Shift+Tab');
+    expect(await value()).toBe('a\nb');
+  });
+
+  test('Escape lets Tab move focus; tab-indent="off" and read-only never trap it', async ({ page }, testInfo) => {
+    await load(page, `<button>before</button>${editor('style="height: 200px; width: 300px"', 'a')}<button>after</button>`);
+    const textarea = page.locator('#editor textarea');
+    const focused = () => page.evaluate(() => document.activeElement.textContent || document.activeElement.tagName);
+    const length = () => page.evaluate(() => document.querySelector('#editor').value.length);
+
+    await press(textarea, testInfo);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Tab');
+    expect(await focused()).toBe('after');
+    await press(textarea, testInfo);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Shift+Tab');
+    expect(await focused()).toBe('before');
+
+    // Refocusing or any other key turns Tab indenting back on
+    await press(textarea, testInfo);
+    await page.keyboard.press('Escape');
+    await page.locator('button').first().click();
+    await press(textarea, testInfo);
+    await page.keyboard.press('Tab');
+    expect(await focused()).toBe('TEXTAREA');
+    const indented = await length();
+    expect(indented).toBeGreaterThan(1);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('Tab');
+    expect(await focused()).toBe('TEXTAREA');
+    expect(await length()).toBeGreaterThan(indented);
+
+    for (const attribute of ['tab-indent', 'readonly']) {
+      await page.evaluate((name) => { const el = document.querySelector('#editor'); el.removeAttribute('readonly'); el.removeAttribute('tab-indent'); el.setAttribute(name, name === 'readonly' ? '' : 'off'); }, attribute);
+      await press(textarea, testInfo);
+      await page.keyboard.press('Tab');
+      expect(await focused()).toBe('after');
+    }
+  });
+
   test('scrolling with the mouse wheel keeps the text aligned', async ({ page }, testInfo) => {
     test.skip(!!testInfo.project.use.isMobile, 'No mouse wheel on mobile');
     await load(page, editor('style="height: 200px; width: 300px"'));

@@ -28,6 +28,8 @@ The text content is the initial code (escape HTML; one leading newline is ignore
 | `readonly`      | Read-only.                                            |
 | `aria-label`    | Accessible label.                                     |
 | `line-numbers`  | `off` hides line numbers.                             |
+| `indent`        | `tabs` makes Tab indent with tabs. Default spaces.    |
+| `tab-indent`    | `off` leaves Tab for focus. Otherwise Escape does.    |
 
 ```js
 const editor = document.querySelector('code-bedder');
